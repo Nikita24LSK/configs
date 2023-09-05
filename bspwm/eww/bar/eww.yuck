@@ -1,0 +1,104 @@
+(include            "variables.yuck")
+(include    "./widgets/battery.yuck")
+(include   "./widgets/calendar.yuck")
+(include     "./widgets/layout.yuck")
+(include    "./widgets/metrics.yuck")
+(include       "./widgets/time.yuck")
+(include       "./widgets/tray.yuck")
+(include     "./widgets/volume.yuck")
+(include "./widgets/workspaces.yuck")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;							Widget Section's							 ;;	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defwidget top []
+
+	(box	:orientation "v" 
+			  :valign "start"
+
+        (workspaces)
+  )
+)
+
+(defwidget end []
+
+	(box :orientation "v" 
+		   :space-evenly "false" 
+		   :valign "end" 
+		   :spacing 6
+
+       (cpuram)
+       (volume)
+       (bat)
+       (tray)
+       (layout)
+       (time)
+  )
+)
+
+(defwidget bar []
+	(box :class "eww_bar" 
+		   :orientation "v" 
+		   :vexpand "false" 
+		   :hexpand "false"
+
+       (top)
+       (end)
+  )
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;							Window Section's							 ;;	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defwindow bar :monitor 0
+               :windowtype "dock"
+	             :wm-ignore false
+	             :hexpand "false"
+	             :vexpand "false"
+               :stacking "fg"
+	             :geometry (
+                  geometry :x "0" 
+						               :y "75" 
+						               :height "86%" 
+						               :width "38px"
+               )
+	             :reserve  (
+                  struts :distance "35px" 
+					               :side "left"
+               )
+               
+               (bar)
+)
+
+(defwindow calendar :geometry (
+                      geometry :x "51px" 
+						                   :y "735px" 
+						                   :width "270px" 
+						                   :height "60px"
+                    )
+
+                    (cal)
+)
+
+(defwindow calendar_tasks :geometry (
+                            geometry :x "51px"
+                                     :y "735px"
+                                     :width "150px"
+                                     :height "295px"
+                          )
+
+                          (cal_tasks)
+)
+
+(defwindow metrics :geometry (
+                      geometry :x "51px"
+                               :y "580px"
+                               :width "550px"
+                               :height "290px"
+                   )
+
+                   (sysdata)
+)
+

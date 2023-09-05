@@ -1,0 +1,39 @@
+(defwidget time []
+  (eventbox :onhover "scripts/event_handler hover calendar time true"
+            :onhoverlost "scripts/event_handler hover calendar time false"
+
+    (box	:orientation "v" 
+          :space-evenly "false"
+          :halign "center"
+
+      (button	:class "bar_text"
+              :onclick "scripts/event_handler popup calendar time"
+              :onrightclick "scripts/event_handler popup calendar_tasks time"
+              :halign "center"
+
+        hour
+      )
+
+      (button	:class "bar_text"
+              :onclick "scripts/event_handler popup calendar time"
+              :onrightclick "scripts/event_handler popup calendar_tasks time"
+              :halign "center"
+
+        min
+      )
+
+      (revealer :transition "slideup"
+                :reveal time_rev
+                :duration "350ms"
+
+        (button :class "bar_text"
+                :onclick "scripts/event_handler popup calendar time"
+                :onrightclick "scripts/event_handler popup calendar_tasks time"
+                :halign "center"
+                
+          sec
+        )
+      )
+    )
+  )
+)

@@ -1,0 +1,225 @@
+###########################################
+####   ХОТКЕИ ДЛЯ ЗАПУСКА ПРИЛОЖЕНИЙ   ####
+###########################################
+
+super + d
+  dmenu_run -b -fn "Cousine Nerd Font:size=12" -nb '#0f0f17' -nf '#bfc9db' -sb '#0050AA' -sf '#FFF'
+
+super + {_,shift + }Return
+	{alacritty, alacritty --class float_alacritty}
+
+alt + s
+	flameshot gui
+
+super + alt + f
+  alacritty --class float_alacritty -o window.dimensions.columns=125 -o window.dimensions.lines=30 -e vifmrun $HOME /
+
+super + alt + e
+  alacritty --class float_alacritty -o window.dimensions.columns=84 -o window.dimensions.lines=24 -e nvim
+
+super + alt + b
+	firefox
+
+super + alt + c
+  /home/nikita/.config/eww/bar/scripts/event_handler popup calendar time
+
+super + alt + n
+	obsidian
+
+super + alt + m
+   /home/nikita/.config/eww/bar/scripts/event_handler popup metrics cpuram
+
+super + alt + v
+	virtualbox
+
+super + alt + r
+  jadx-gui
+
+super + shift + i
+	shutdown -h now
+
+super + shift + r
+	reboot
+
+super + shift + z
+  dm-tool lock
+
+super + alt + t
+  trans-notify notify :en
+
+ctrl + super + alt + t
+  trans-notify clip :en
+
+alt + t
+  trans-notify notify :ru
+
+ctrl + alt + t
+  trans-notify clip :ru
+
+super + shift + t
+  win_translate
+
+super + alt + p
+  copyq toggle
+
+super + alt + {1-9,0}
+  radio {1-9,0}
+
+super + alt + minus
+  radio nlist
+
+###########################################
+####          УПРАВЛЕНИЕ BSPWM         ####
+###########################################
+
+#ЗАКРЫТЬ ОКНО ИЛИ УБИТЬ ЕГО
+super + {_, shift + }c
+	bspc node -{c}
+
+#ПЕРЕЗАГРУЗИТЬ КОНФИГ SXHKD
+super + shift + s 
+  pkill -USR1 -x sxhkd
+
+#ВЫЙТИ/ПЕРЕЗАГРУЗИТЬ BSPWM
+super + shift + {e,r}
+  bspc {quit,wm -r}
+
+#ПЕРЕХОД В РЕЖИМ МОНОКЛЯ И ОБРАТНО
+super + m
+	bspc desktop -l next
+
+#отправить новейший отмеченный узел в новейший предварительно выбранный узел(яхз что это значит)
+super + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+#ПОМЕНЯТЬ МЕСТАМИ ТЕКУЩЕЕ И САМОЕ БОЛЬШОЕ ОКНО
+super + g
+	bspc node -s biggest.window
+
+#ДОБАВИТЬ ОКНО К КОНТЕЙНЕРУ С ВКЛАДКАМИ
+ctrl + alt + {h,j,k,l}
+    tabc attach $(bspc query -N -n) {$(bspc query -N -n west),$(bspc query -N -n south),$(bspc query -N -n north),$(bspc query -N -n east)}
+
+#СОЗДАТЬ/УДАЛИТЬ ИЗ КОНТЕЙНЕРА С ВКЛАДКАМИ
+super + w 
+    id=$(bspc query -N -n); \
+    [[ "$(tabc printclass $id)" == "tabbed" ]] \
+    && tabc detach $id \
+    || tabc create $id 
+
+#ПЕРЕКЛЮЧИТЬ АВТОДОБАВЛЕНИЕ В КОНТЕЙНЕР С ВКЛАДКАМИ
+super + shift + w 
+    tabc autoattach $(bspc query -N -n)
+
+###########################################
+####         УПРАВЛЕНИЕ ФЛАГАМИ        ####
+###########################################
+
+#ПОМЕНЯТЬ СТАТУС ОКНА НА /ТАЙЛОВОЕ/ПСЕВДО ТАЙЛОВОЕ/ПЛАВАЮЩЕЕ/ПОЛНОЭКРАННОЕ
+super + {t,a,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+#УСТАНОВИТЬ ФЛАГ УЗЛА /ОТМЕЧЕННЫЙ/ЗАЛОЧЕННЫЙ/ЛИПКИЙ/ПРИВАТНЫЙ
+super + ctrl + {m,x,y,z}
+	bspc node -g {marked,locked,sticky,private}
+
+
+
+###########################################
+####         УПРАВЛЕНИЕ ФОКУСОМ        ####
+###########################################
+
+#ПЕРЕМЕСТИТЬ ОКНО
+super + {_,shift + }{Left,h,Down,j,Up,k,Right,l}
+	$HOME/.config/sxhkd/move_window {"focus","move"} {0,0,1,1,2,2,3,3}
+
+#ВЫДЕЛИТЬ НЕСКОЛЬКО ПРИЛОЖЕНИЙ НАПРИМЕР ЧТО БЫ ПЕРЕМЕСТИТЬ ГРУППУ ПРИЛОЖЕНИЙ НА ДРУГОЙ ВОРКСПЕЙС
+super + {p,b,comma,period}
+	bspc node -f @{parent,brother,first,second}
+
+#ПЕРЕКЛЮЧЕНИЕ ПО ОТКРЫТЫМ ПРИЛОЖЕНИЯМ В ПРЕДЕЛАХ ОДНОГО ВОРКСПЕЙСА
+super + {_,shift + }q
+	bspc node -f {next,prev}.local.!hidden.window
+
+#ПЕРЕХОД ПО ВОРКСПЕЙСАМ
+super + bracket{left,right}
+	bspc desktop -f {prev,next}.local
+
+#ВЕРНУТСЯ НА ПРЕДЫДУЩИЙ АКТИВНЫЙ ВОРКСПЕЙС
+super + {grave,Tab}
+	bspc {node,desktop} -f last
+
+#ПЕРЕКЛЮЧИТСЯ НА ВОРКСПЕЙС ИЛИ ПЕРЕТАЩИТЬ НА НЕГО АКТИВНОЕ ОКНО
+super + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+#ПЕРЕЙТИ НА ВОРКСПЕЙС ВМЕСТЕ С АКТИВНЫМ ОКНОМ
+ctrl + alt + {1-9,0}
+  bspc node -d '^{1-9,10}' --follow
+
+###########################################
+####       ПРЕДВАРИТЕЛЬНЫЙ ВЫБОР       ####
+###########################################
+
+#ВЫБРАТЬ НАПРАВЛЕНИЕ В КОТОРОМ ОТКРОЕТСЯ НОВОЕ ОКНО
+super + ctrl + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+#ВЫБРАТЬ РАЗМЕР НОВОГО ОКНА
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+#ОТМЕНИТЬ НАПРАВЛЕНИЕ В КОТОРОМ ОТКРОЕТСЯ НОВОЕ ОКНО
+super + ctrl + space
+	bspc node -p cancel
+
+###########################################
+####   ПЕРЕМЕЩЕНИЕ/ИЗМЕНЕНИЕ РАЗМЕРА   ####
+###########################################
+
+#УВЕЛИЧИТЬ ОКНО СДВИНУВ ОДНУ ИЗ ЕГО СТОРОН
+super + alt + {h,j,k,l}
+	bspc node -z {right -20 0,bottom 0 20,bottom 0 -20,right 20 0}
+
+#УМЕНЬШИТЬ ОКНО СДВИНУВ ОДНУ ИЗ ЕГО СТОРОН
+super + alt + shift + {h,j,k,l}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+#ПЕРЕМЕЩЕНИЕ ПЛАВАЮЩИХ ОКОН
+super + shift + {h,j,k,l}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+#ПЕРЕМЕЩЕНИЕ ПЛАВАЩИХ ОКОН ПО СЕТКЕ 3X3
+ctrl + shift + {1,2,3,4,5,6,7,8,9}
+  /home/nikita/.config/sxhkd/move_float {1,2,3,4,5,6,7,8,9}
+
+#SCRATCHPAD
+super + shift + minus
+  id=$(bspc query -N -n); \
+  is_floating=$(bspc query -N -n "focused.floating"); \
+  if [[ "$is_floating" == "" ]]; then \
+    bspc node -t floating \
+  fi; \
+  bspc node $id --flag hidden=on
+
+###########################################
+#### УПРАВЛЕНИЕ МУЛЬТИМЕДИА КЛАВИШАМИ  ####
+###########################################
+XF86AudioRaiseVolume
+  pactl set-sink-volume @DEFAULT_SINK@ +5%
+
+XF86AudioLowerVolume
+  pactl set-sink-volume @DEFAULT_SINK@ -5%
+
+XF86AudioMute
+  pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+XF86AudioMicMute
+  pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+XF86MonBrightnessUp
+  brillo -A 5
+
+XF86MonBrightnessDown
+  brillo -U 5
+

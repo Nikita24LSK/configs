@@ -1,0 +1,67 @@
+#!/bin/bash
+
+METRICS_CHECK_FILE=/tmp/metrics_open
+data=""
+
+get_data() {
+  IFS=$'\n'
+
+  mod=$(eww -c $HOME/.config/eww/bar get top_switch)
+  data=($(ps aux --sort -%$mod | head -n6 | awk '{ print $1, $2, $3, $4, $11 }' | column -t --output-separator " "))
+}
+
+print_data() {
+  echo "(box :class \"metrics_text\" :orientation \"v\" :space-evenly \"false\" :valign \"start\" (box :orientation \"h\" :halign \"start\" (label :text \"${data[0]}\")) (box :orientation \"h\" :halign \"start\" (label :text \"${data[1]}\")) (box :orientation \"h\" :halign \"start\" (label :text \"${data[2]}\")) (box :orientation \"h\" :halign \"start\" (label :text \"${data[3]}\")) (box :orientation \"h\" :halign \"start\" (label :text \"${data[4]}\")) (box :orientation \"h\" :halign \"start\" (label :text \"${data[5]}\")) )"
+}
+
+subscribe() {
+  while true; do
+    work_flag=$(eww -c $HOME/.config/eww/bar get top_work)
+
+    if [[ "$work_flag" == "true" ]]; then
+      get_data
+    fi
+
+    print_data
+    sleep 1
+  done
+}
+
+switch_mode() {
+  mod=$(eww -c $HOME/.config/eww/bar get top_switch)
+
+  if [[ "$mod" == "cpu" ]]; then
+    mod="mem"
+  else
+    mod="cpu"
+  fi
+
+  eww -c $HOME/.config/eww/bar update top_switch="$mod"
+
+  work_flag=$(eww -c $HOME/.config/eww/bar get top_work)
+
+  if [[ "$work_flag" == "false" ]]; then
+    get_data
+  fi
+}
+
+toggle() {
+  work_flag=$(eww -c $HOME/.config/eww/bar get top_work)
+
+  if [[ "$work_flag" == "true" ]]; then
+    new_flag=false
+  else
+    new_flag=true
+  fi
+
+  eww -c $HOME/.config/eww/bar update top_work=$new_flag
+}
+
+if [[ "$1" == "subscribe" ]]; then
+  subscribe
+elif [[ "$1" == "switch" ]]; then
+  switch_mode
+elif [[ "$1" == "toggle" ]]; then
+  toggle
+fi
+

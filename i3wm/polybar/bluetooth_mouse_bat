@@ -1,0 +1,12 @@
+#!/bin/bash
+
+BAT_STATUS=$(dbus-send --print-reply=literal --system --dest=org.bluez /org/bluez/hci0/dev_F1_29_53_01_01_65 org.freedesktop.DBus.Properties.Get string:"org.bluez.Battery1" string:"Percentage" 2> /dev/null)
+
+if [ "$?" == 1 ]; then
+  MESSAGE="Mouse not connected"
+else
+  BAT_PERCENT=$(echo $BAT_STATUS | awk '{print $3}')
+  MESSAGE="$BAT_PERCENT%"
+fi
+
+notify-send -t 1500 -i dialog-info "Bluetooth mouse bat status" "$MESSAGE"

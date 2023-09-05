@@ -1,0 +1,12 @@
+# vim:filetype=config:tw=80:et
+
+background "#0f0f17"
+vertical true 
+geometry 1x2-1840+871
+grow_gravity SE 
+icon_gravity NE
+icon_size 24
+slot_size 28
+sticky true
+window_type dock
+# transparent true

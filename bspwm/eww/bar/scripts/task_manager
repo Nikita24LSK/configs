@@ -1,0 +1,207 @@
+#!/bin/env bash
+
+TASKS_DIR="$HOME/.config/eww/bar/calendar_tasks"
+
+start_monitor() {
+  while true; do
+    all_files=($(ls $TASKS_DIR | sort))
+
+    for i in ${all_files[@]}; do
+      file_date=$(echo $i | awk -F '.' '{printf "%s/%s/%s", $2, $1, $3}')
+      file_date=$(date --date="$file_date" +%s)
+      cur_date=$(date +%s)
+
+      (( $cur_date - file_date > 86400 )) && rm $TASKS_DIR/$i
+    done
+
+    tasks=$(get_today_tasks)
+
+    if [ "$tasks" != "" ]; then
+      tasks=($tasks)
+
+      for i in ${tasks[@]}; do
+        time=$(date +%s)
+        time_int=$(date --date="$i" +%s)
+
+        (( $time > $time_int )) && notify-send -t 0 "$i" "$(get_task $i)"
+      done
+    fi
+
+    sleep 120
+  done
+}
+
+create_task() {
+  plan_day=$1
+  plan_month=$2
+  plan_year=$3
+  cur_date=$(date +%Y.%m.%d)
+
+  if (( ${#plan_day} < 2 )); then
+    plan_day=0$plan_day
+  fi
+
+  if (( ${#plan_month} < 2 )); then
+    plan_month=0$plan_month
+  fi
+
+  plan_date_compare="$plan_year.$plan_month.$plan_day"
+  plan_date_filename="$plan_day.$plan_month.$plan_year"
+
+  if [[ "$cur_date" > "$plan_date_compare" ]]; then
+    notify-send "Cannot planning to the past"
+  else
+    alacritty --class float_alacritty -o window.dimensions.columns=84 -o \
+      window.dimensions.lines=24 -e nvim $TASKS_DIR/$plan_date_filename &
+  fi
+}
+
+get_today_tasks() {
+  cur_date=$(date +%d.%m.%Y)
+  today_file=$TASKS_DIR/$cur_date
+  func_output=""
+
+  if [ -f $today_file ]; then
+    sed -i '/^$/d' $today_file
+    func_output=$(cat $today_file | grep -E$1 "^[0-9]{1,2}:[0-9]{1,2}$")
+
+    if [ "$1" != "" ]; then
+      func_output=$(echo $func_output | sed 's/:/-/')
+    fi
+
+  fi
+
+  echo $func_output
+}
+
+get_task() {
+  cur_date=$(date +%d.%m.%Y)
+  today_file=$TASKS_DIR/$cur_date
+
+  if [ ! -f $today_file ]; then
+    echo ""
+    exit
+  fi
+
+  task_time=$1
+  today_tasks=($(get_today_tasks n))
+  getting_task_line_number=""
+  next_task_line_number=""
+
+  for ((i=0; i < ${#today_tasks[@]}; i++)); do
+    time_match=$(echo ${today_tasks[i]} | grep $task_time)
+    if [ "$time_match" != "" ]; then
+      getting_task_line_number=$(echo ${today_tasks[i]} | grep -Eo "^[0-9]+")
+      next_task_line_number=$(echo ${today_tasks[i+1]} | grep -Eo "^[0-9]+")
+      break
+    fi
+  done
+
+  if [ "$getting_task_line_number" == "" ]; then
+    echo ""
+    exit
+  fi
+
+  all_lines=$(cat $today_file | wc -l)
+
+  if [ "$next_task_line_number" == "" ]; then
+    cat $today_file | sed "1,${getting_task_line_number}d"
+  else
+    cat $today_file | sed "1,${getting_task_line_number}d;${next_task_line_number},${all_lines}d"
+  fi
+}
+
+delete_task() {
+  cur_date=$(date +%d.%m.%Y)
+  today_file=$TASKS_DIR/$cur_date
+
+  if [ ! -f $today_file ]; then
+    echo ""
+    exit
+  fi
+
+  task_time=$1
+  today_tasks=($(get_today_tasks n))
+  getting_task_line_number=""
+  next_task_line_number=""
+
+  for ((i=0; i < ${#today_tasks[@]}; i++)); do
+    time_match=$(echo ${today_tasks[i]} | grep $task_time)
+    if [ "$time_match" != "" ]; then
+      getting_task_line_number=$(echo ${today_tasks[i]} | grep -Eo "^[0-9]+")
+      next_task_line_number=$(echo ${today_tasks[i+1]} | grep -Eo "^[0-9]+")
+      break
+    fi
+  done
+
+  if [ "$getting_task_line_number" == "" ]; then
+    exit
+  fi
+
+  all_lines=$(cat $today_file | wc -l)
+  if [ "$next_task_line_number" == "" ]; then
+    sed -i "${getting_task_line_number},${all_lines}d" $today_file
+  else
+    let "next_task_line_number = $next_task_line_number - 1"
+    sed -i "${getting_task_line_number},${next_task_line_number}d" $today_file
+  fi
+}
+
+out_widget() {
+  output=""
+  today_tasks=($(get_today_tasks))
+  task_counter=1
+
+  for i in ${today_tasks[@]}; do
+    new_item="(button :class \"bar_text\" :halign \"start\" "`
+            `":onclick \"scripts/task_manager edit_task $i\" "`
+            `":onrightclick \"scripts/task_manager notify_task $i\" "`
+            `":onmiddleclick \"scripts/task_manager delete_task $i\" "`
+            `"\"$task_counter. $i\") "
+
+    output=$output$new_item
+    let task_counter=$task_counter+1
+  done
+
+  output="(box :orientation \"v\" :spacing 3 :space-evenly \"false\" $output )"
+
+  echo $output
+}
+
+notify_task() {
+  task_text=$(get_task $1)
+  notify-send "$1" "$task_text"
+}
+
+edit_today() {
+  full_date=$(date +%d.%m.%Y)
+  filepath="$TASKS_DIR/$full_date"
+  nvim_opts=""
+
+  if [ "$1" != "" ]; then
+    line_number=$(cat $filepath | grep -n $1 | grep -Eo "^[0-9]+")
+    [ "$line_number" != "" ] && let line_number=$line_number+1 && nvim_opts="+$line_number"
+  fi
+
+  alacritty --class float_alacritty -o window.dimensions.columns=84 -o \
+    window.dimensions.lines=24 -e nvim $nvim_opts $filepath &
+}
+
+delete_today() {
+  today_filename=$(date +%d.%m.%Y)
+  today_filepath=$TASKS_DIR/$today_filename
+
+  [ -f $today_filepath ] && rm $today_filepath
+}
+
+[ "$1" == "create" ] && create_task $2 $3 $4
+[ "$1" == "today_tasks" ] && get_today_tasks
+[ "$1" == "get_task" ] && get_task $2
+[ "$1" == "delete_task" ] && delete_task $2
+[ "$1" == "out_widget" ] && out_widget
+[ "$1" == "notify_task" ] && notify_task $2
+[ "$1" == "edit_today" ] && edit_today
+[ "$1" == "edit_task" ] && edit_today $2
+[ "$1" == "delete_today" ] && delete_today
+[ "$1" == "monitor" ] && start_monitor &
+

@@ -1,0 +1,22 @@
+#!/bin/env bash
+
+IMG_PATH=/storage/emulated/0/Download/arch_android.img
+IMG_MOUNTPOINT=/data/arch
+
+termux-wake-lock
+
+su root -c "mount -o loop $IMG_PATH $IMG_MOUNTPOINT"
+su root -c "mount -t proc none $IMG_MOUNTPOINT/proc"
+su root -c "mount -t sysfs none $IMG_MOUNTPOINT/sys"
+su root -c "mount -o bind /dev $IMG_MOUNTPOINT/dev"
+su root -c "mount -t devpts none $IMG_MOUNTPOINT/dev/pts"
+su root -c "mount /storage/1F89-1CF4/ $IMG_MOUNTPOINT/mnt"
+
+su root -c "chroot $IMG_MOUNTPOINT /bin/bash -c \"su root\""
+
+su root -c "umount $IMG_MOUNTPOINT/mnt"
+su root -c "umount $IMG_MOUNTPOINT/dev/pts"
+su root -c "umount $IMG_MOUNTPOINT/dev"
+su root -c "umount $IMG_MOUNTPOINT/sys"
+su root -c "umount $IMG_MOUNTPOINT/proc"
+su root -c "umount $IMG_MOUNTPOINT"

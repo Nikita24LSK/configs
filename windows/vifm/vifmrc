@@ -1,0 +1,70 @@
+source "C:\\Program Files\\vifm\\favicons.vifm"
+colorscheme nord_custom
+
+set trash
+set trashdir="~/.local/share/vifm/Trash"
+
+set sortnumbers
+set undolevels=100
+set nu
+set rnu
+set vicmd=nvim
+set wildmenu
+set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
+set ignorecase
+set smartcase
+set incsearch
+set scrolloff=5
+set runexec
+
+fileviewer *.html,*.go,*.py,*.c,*.cpp,*.h,*.json,*.css,*.js,*.asm,*.sh,*.ahk,*.ps1,*.bat highlight -O xterm256 -s tabula %"c
+
+filextype *.apmx64 apimonitor-x64 %"f%i&
+filextype *.apmx32 apimonitor-x32 %"f%i&
+filextype *.i64 ida64 %"f%i&
+filextype *.i32 ida %"f%i&
+filextype *.pcap,*.pcapng Wireshark %"f%i&
+filextype *.pdf SumatraPDF %"f%i&
+filextype *.jpg,*.png,*.bmp ImageGlass %"f%i&
+filextype *.doc,*.docx WINWORD %"f%i&
+filextype *.xls,*.xlsx EXCEL %"f%i&
+filextype *.ppt,*.pptx POWERPNT %"f%i&
+filextype *.mp3,*.wav,*.avi,*.mp4 vlc %"f%i&
+filextype *.rar,*.zip,*.7z,*.tar,*.tar.gz,*.tar.xz winrar %"f%i&
+
+nnoremap rc :!.\\%"c %m<cr>
+nnoremap rw :!.\\%"c%i<cr>
+nnoremap ra :!df -h %m<cr>
+nnoremap cd :mkdir 
+nnoremap <c-v> :vim 
+nnoremap <c-h> :!r2 -nwc 'V' %"c<cr>
+nnoremap <c-e> :!winrar x %"f %"D<cr>
+nnoremap <c-s> :sync<cr>
+nnoremap <c-b> :!firefox %"d\\%"f<cr>
+nnoremap <c-f> :!winrar a -ep1 -scul -r0 -iext -imon1 -- . %"f<cr>
+nnoremap w :view<cr>
+nnoremap s :shell<cr>
+nnoremap S :sort<cr>
+vnoremap w :view<cr>gv
+nnoremap <space>t :tabnew<cr>
+nnoremap <space>j :tabprevious<cr>
+nnoremap <space>k :tabnext<cr>
+nnoremap <space>x :tabclose<cr>
+nnoremap cc :copy<cr>
+nnoremap cC :clone<cr>
+vnoremap cC :clone<cr>
+nnoremap cm :move<cr>
+nnoremap rr :invert o<cr>
+nnoremap . za
+nnoremap ; :
+nnoremap <c-d> :quit<cr>
+
+command! diff nvim -d %"f %"F
+command! vim nvim %a
+
+mark h C:\\Users\\user
+mark d C:\\Users\\user\\Desktop
+mark D C:\\Users\\user\\Downloads
+mark z "C:\\Program Files\\vifm\\"
+mark r C:\\
+

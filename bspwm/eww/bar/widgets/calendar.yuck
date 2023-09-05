@@ -1,0 +1,39 @@
+(defwidget cal []
+
+	(box :class "cal-box" 
+		   :orientation "v"
+
+	  (box :class "cal-inner-box"
+
+	    (calendar :class "cal" 
+			          :day calendar_day 
+			          :month calendar_month 
+			          :year calendar_year
+                :onclick "scripts/task_manager create {0} {1} {2}"
+      )
+    )
+  )
+)
+
+(defwidget cal_tasks []
+  (scroll :class "cal-tasks"
+          :orientation "v"
+
+    (box :orientation "v" 
+         :space-evenly "false"
+         :halign "center"
+         :spacing 15
+
+        (button :class "bar_text"
+                :halign "center"
+                :onclick "scripts/task_manager edit_today"
+                :onmiddleclick "scripts/task_manager delete_today"
+
+                full_date
+        )
+
+        (literal :content tasks)
+    )
+  )
+
+)

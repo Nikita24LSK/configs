@@ -1,0 +1,110 @@
+call plug#begin('C:\Program Files\Vim\vim90\plugged')
+Plug 'preservim/nerdtree'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+call plug#end()
+
+syntax on
+colorscheme plain
+set guioptions-=m  "disable menu bar
+set guioptions-=T  "disable toolbar
+set guioptions-=r  "disable scrollbar
+set hlsearch
+set incsearch
+set belloff=all
+set encoding=utf-8
+set nocompatible
+syntax enable
+set lines=24
+set columns=84
+set guifont=Cousine\ Nerd\ Font\ Mono:h12
+set background=dark
+set showcmd
+set mouse=a
+set tabstop=2
+set shiftwidth=2
+set expandtab
+set nu
+set rnu
+set ch=1
+set autoindent
+set smartindent
+set wildmenu
+set history=200
+set tw=79
+set colorcolumn=-6,+1
+set foldmethod=indent
+set nofoldenable
+set cursorline
+set backspace=indent,eol,start
+set scrolloff=5
+
+map <C-n> :NERDTreeToggle<CR>
+
+inoremap " ""<left>
+inoremap ' ''<left>
+inoremap ( ()<left>
+inoremap [ []<left>
+inoremap { {}<left>
+inoremap {<CR> {<CR>}<ESC>O
+inoremap {;<CR> {<CR>};<ESC>O
+
+nnoremap ; :
+nnoremap <C-s> :w<CR>
+nnoremap <C-d> :q<CR>
+nnoremap <CR> o<Esc>
+nnoremap <SPACE> <Nop>
+let mapleader="\<Space>"
+
+nnoremap <Leader>tn :tabnew<CR>
+nnoremap <Leader>tx :tabclose<CR>
+nnoremap <Leader>x :bdelete<CR>
+nnoremap <Leader>b :files<CR>
+nnoremap <Leader>wh :split<CR>
+nnoremap <Leader>wv :vsplit<CR>
+
+nnoremap <C-S-v> "*p
+inoremap <C-S-v> <C-o>"*p
+vnoremap <C-S-c> "*y
+nnoremap <C-v> v<C-v>
+
+nnoremap <Tab> :bnext<CR>
+nnoremap <S-Tab> :bprevious<CR>
+nnoremap <C-Tab> :tabnext<CR>
+nnoremap <C-S-Tab> :tabprevious<CR>
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <C-S-h> <C-w>h
+nnoremap <C-S-j> <C-w>j
+nnoremap <C-S-k> <C-w>k
+nnoremap <C-S-l> <C-w>l
+nnoremap <Esc> :noh<CR>
+
+inoremap <C-h> <C-o>h
+inoremap <C-j> <C-o>j
+inoremap <C-k> <C-o>k
+inoremap <C-l> <C-o>l
+inoremap <C-b> <C-o>^
+inoremap <C-e> <C-o>$
+inoremap jj <ESC>
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline_theme='tomorrow'
+let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+let g:airline_left_sep = '|'
+let g:airline_left_alt_sep = ' '
+let g:airline_right_sep = ' '
+let g:airline_right_alt_sep = ' '
+let g:airline_symbols.branch = 'BR'
+let g:airline_symbols.readonly = 'RO'
+let g:airline_symbols.linenr = ' '
+let g:airline_symbols.maxlinenr = ' '
+let g:airline_symbols.dirty = ' '

@@ -1,0 +1,50 @@
+" nord color scheme approximation for vifm
+
+" Reset all styles first
+highlight clear
+
+highlight Border      cterm=none	ctermfg=default ctermbg=default
+highlight TopLine     cterm=none	ctermfg=110	ctermbg=236
+highlight TopLineSel	cterm=bold	ctermfg=110 ctermbg=237
+
+highlight Win         cterm=none	ctermfg=7	ctermbg=default
+highlight OtherWin    cterm=none	ctermfg=7	ctermbg=default
+highlight CurrLine    cterm=bold,inverse	ctermfg=default	ctermbg=default
+highlight OtherLine   cterm=bold	ctermfg=default	ctermbg=235
+highlight Selected    cterm=none	ctermfg=7	ctermbg=237
+
+highlight JobLine     cterm=bold	ctermfg=116	ctermbg=238
+highlight StatusLine	cterm=bold	ctermfg=110	ctermbg=237
+highlight ErrorMsg    cterm=bold	ctermfg=167	ctermbg=default
+highlight WildMenu    cterm=bold,inverse	ctermfg=110	ctermbg=236
+highlight CmdLine     cterm=none	ctermfg=7	ctermbg=default
+
+highlight Executable	cterm=bold	ctermfg=010	ctermbg=default
+highlight Directory   cterm=bold	ctermfg=110	ctermbg=default
+highlight Link        cterm=none	ctermfg=005	ctermbg=default
+highlight BrokenLink	cterm=bold	ctermfg=007 ctermbg=167
+highlight Device      cterm=none,standout	ctermfg=110	ctermbg=default
+highlight Fifo        cterm=none	ctermfg=172	ctermbg=default
+highlight Socket      cterm=bold	ctermfg=223	ctermbg=default
+
+highlight {*.rar}     cterm=bold  ctermfg=004 ctermbg=default
+highlight {*.tar}     cterm=bold  ctermfg=004 ctermbg=default
+highlight {*.tar.gz}  cterm=bold  ctermfg=004 ctermbg=default
+highlight {*.zip}     cterm=bold  ctermfg=004 ctermbg=default
+highlight {*.7z}      cterm=bold  ctermfg=004 ctermbg=default
+highlight {*.xz}      cterm=bold  ctermfg=004 ctermbg=default
+highlight {*.tar.xz}  cterm=bold  ctermfg=004 ctermbg=default
+highlight {*.lnk}     cterm=bold  ctermfg=008 ctermbg=default
+highlight {*.ini}     cterm=bold  ctermfg=120 ctermbg=default
+highlight {*.txt}     cterm=bold  ctermfg=120 ctermbg=default
+highlight {*.msi}     cterm=bold  ctermfg=010 ctermbg=default
+highlight {*.json}    cterm=bold  ctermfg=006 ctermbg=default
+highlight {*.mp3}     cterm=bold  ctermfg=141 ctermbg=default
+highlight {*.mp4}     cterm=bold  ctermfg=141 ctermbg=default
+highlight {*.avi}     cterm=bold  ctermfg=141 ctermbg=default
+highlight {*.wav}     cterm=bold  ctermfg=141 ctermbg=default
+highlight {*.jpg}     cterm=bold  ctermfg=166 ctermbg=default
+highlight {*.jpeg}    cterm=bold  ctermfg=166 ctermbg=default
+highlight {*.png}     cterm=bold  ctermfg=166 ctermbg=default
+highlight {*.bmp}     cterm=bold  ctermfg=166 ctermbg=default
+

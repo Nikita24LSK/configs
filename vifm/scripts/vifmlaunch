@@ -1,0 +1,3 @@
+#!/bin/bash
+
+alacritty -e vifmrun $1 $2

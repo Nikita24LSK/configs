@@ -1,0 +1,13 @@
+(defwidget tray []
+
+  (box :orientation "v"
+       :valign "end"
+
+    (button :class "offset_bar_icon"
+            :onclick "scripts/tray -t"
+            :halign "center"
+
+      ""
+    )
+  )
+)

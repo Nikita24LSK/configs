@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -x
+EWW_CMD="eww -c $HOME/.config/eww/bar"
+METRICS_FILE="/tmp/metrics"
+
+subscribe() {
+  python_script='import psutil;'`
+               `'cpu_usage = round(psutil.cpu_percent(interval=1));'`
+               `'ram_usage = round(psutil.virtual_memory()[2]);'`
+               `'print(f"{cpu_usage} {ram_usage}")'
+
+  while true; do
+    output=$(python -c "$python_script")
+    echo $output > $METRICS_FILE
+
+    cpu=$(echo $output | cut -d" " -f1)
+    ram=$(echo $output | cut -d" " -f2)
+
+    if (( $cpu > 90 || $ram > 90 )); then
+      crit_state=on
+    else
+      crit_state=off
+    fi
+
+    $HOME/.config/eww/bar/scripts/event_handler crit metrics cpuram $crit_state
+
+    sleep 1
+  done
+
+}
+
+get_val() {
+  cat $METRICS_FILE | cut -d" " -f$1
+}
+
+case $1 in
+  "cpu")
+    get_val 1
+  ;;
+  "ram")
+    get_val 2
+  ;;
+  "subscribe")
+    subscribe
+  ;;
+  "*")
+    exit
+  ;;
+esac
+

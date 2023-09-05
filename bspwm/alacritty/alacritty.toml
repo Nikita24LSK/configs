@@ -1,0 +1,263 @@
+tabspaces = 4
+
+[colors.bright]
+black = "0x414458"
+blue = "0xFF8037"
+cyan = "0x3FDCEE"
+green = "0x18E3C8"
+magenta = "0x556FFF"
+red = "0xFF4971"
+white = "0xBEBEC1"
+yellow = "0xEBCB8B"
+
+[colors.normal]
+black = "0x282A36"
+blue = "0x8897F4"
+cyan = "0x79E6F3"
+green = "0x5ADECD"
+magenta = "0xC574DD"
+red = "0xF37F97"
+white = "0xFDFDFD"
+yellow = "0xF2A272"
+
+[colors.primary]
+background = "0x1D1F28"
+foreground = "0xFDFDFD"
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 7.5
+
+[font.bold]
+family = "Cousine Nerd Font"
+style = "Extra Bold"
+
+[font.bold_italic]
+family = "Cousine Nerd Font"
+style = "Extra Bold Italic"
+
+[font.italic]
+family = "Cousine Nerd Font"
+style = "Medium Italic"
+
+[font.normal]
+family = "Cousine Nerd Font"
+style = "Regular"
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "T"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollLineUp"
+key = "Up"
+mode = "~Alt"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "ScrollLineDown"
+key = "Down"
+mode = "~Alt"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "ScrollLineUp"
+key = "K"
+mode = "~Alt"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "ScrollLineDown"
+key = "J"
+mode = "~Alt"
+mods = "Control|Shift"
+
+[mouse]
+hide_when_typing = true
+
+[schemes.ayu_dark.bright]
+black = "0x686868"
+blue = "0x59C2FF"
+cyan = "0x95E6CB"
+green = "0xC2D94C"
+magenta = "0xFFEE99"
+red = "0xF07178"
+white = "0xFFFFFF"
+yellow = "0xFFB454"
+
+[schemes.ayu_dark.normal]
+black = "0x01060E"
+blue = "0x53BDFA"
+cyan = "0x90E1C6"
+green = "0x91B362"
+magenta = "0xFAE994"
+red = "0xEA6C73"
+white = "0xC7C7C7"
+yellow = "0xF9AF4F"
+
+[schemes.ayu_dark.primary]
+background = "0x0A0E14"
+foreground = "0xB3B1AD"
+
+[schemes.challenger-deep.bright]
+black = "0x565575"
+blue = "0x65b2ff"
+cyan = "0x63f2f1"
+green = "0x62d196"
+magenta = "0x906cff"
+red = "0xff5458"
+white = "0xa6b3cc"
+yellow = "0xffb378"
+
+[schemes.challenger-deep.normal]
+black = "0x100e23"
+blue = "0x91ddff"
+cyan = "0xaaffe4"
+green = "0x95ffa4"
+magenta = "0xc991e1"
+red = "0xff8080"
+white = "0xcbe3e7"
+yellow = "0xffe9aa"
+
+[schemes.challenger-deep.primary]
+background = "0x1b182c"
+foreground = "0xcbe3e7"
+
+[schemes.hyper.bright]
+black = "0x808080"
+blue = "0x0066ff"
+cyan = "0x00ffff"
+green = "0x33ff00"
+magenta = "0xcc00ff"
+red = "0xfe0100"
+white = "0xFFFFFF"
+yellow = "0xfeff00"
+
+[schemes.hyper.cursor]
+cursor = "0xffffff"
+text = "0xF81CE5"
+
+[schemes.hyper.normal]
+black = "0x000000"
+blue = "0x0066ff"
+cyan = "0x00ffff"
+green = "0x33ff00"
+magenta = "0xcc00ff"
+red = "0xfe0100"
+white = "0xd0d0d0"
+yellow = "0xfeff00"
+
+[schemes.hyper.primary]
+background = "0x000000"
+foreground = "0xffffff"
+
+[schemes.moonlight_ii_vscode.bright]
+black = "0x828bb8"
+blue = "0x82aaff"
+cyan = "0xb4f9f8"
+green = "0xc3e88d"
+magenta = "0xff966c"
+red = "0xff98a4"
+white = "0x5f8787"
+yellow = "0xffc777"
+
+[schemes.moonlight_ii_vscode.cursor]
+cursor = "0x808080"
+text = "0x7f85a3"
+
+[schemes.moonlight_ii_vscode.normal]
+black = "0x444a73"
+blue = "0x3e68d7"
+cyan = "0x86e1fc"
+green = "0x4fd6be"
+magenta = "0xfc7b7b"
+red = "0xff5370"
+white = "0xd0d0d0"
+yellow = "0xffc777"
+
+[schemes.moonlight_ii_vscode.primary]
+background = "0x1e2030"
+foreground = "0x7f85a3"
+
+[schemes.thelovelace.bright]
+black = "0x414458"
+blue = "0xFF8037"
+cyan = "0x3FDCEE"
+green = "0x18E3C8"
+magenta = "0x556FFF"
+red = "0xFF4971"
+white = "0xBEBEC1"
+yellow = "0xEBCB8B"
+
+[schemes.thelovelace.normal]
+black = "0x282A36"
+blue = "0x8897F4"
+cyan = "0x79E6F3"
+green = "0x5ADECD"
+magenta = "0xC574DD"
+red = "0xF37F97"
+white = "0xFDFDFD"
+yellow = "0xF2A272"
+
+[schemes.thelovelace.primary]
+background = "0x1D1F28"
+foreground = "0xFDFDFD"
+
+[schemes.tokyo-night.bright]
+black = "0x444b6a"
+blue = "0x7da6ff"
+cyan = "0x0db9d7"
+green = "0xb9f27c"
+magenta = "0xbb9af7"
+red = "0xff7a93"
+white = "0xacb0d0"
+yellow = "0xff9e64"
+
+[schemes.tokyo-night.normal]
+black = "0x32344a"
+blue = "0x7aa2f7"
+cyan = "0x449dab"
+green = "0x9ece6a"
+magenta = "0xad8ee6"
+red = "0xf7768e"
+white = "0x787c99"
+yellow = "0xe0af68"
+
+[schemes.tokyo-night.primary]
+background = "0x1a1b26"
+foreground = "0xa9b1d6"
+
+[schemes.tokyo-night-storm.bright]
+black = "0x444b6a"
+blue = "0x7da6ff"
+cyan = "0x0db9d7"
+green = "0xb9f27c"
+magenta = "0xbb9af7"
+red = "0xff7a93"
+white = "0xacb0d0"
+yellow = "0xff9e64"
+
+[schemes.tokyo-night-storm.normal]
+black = "0x32344a"
+blue = "0x7aa2f7"
+cyan = "0x449dab"
+green = "0x9ece6a"
+magenta = "0xad8ee6"
+red = "0xf7768e"
+white = "0x9699a8"
+yellow = "0xe0af68"
+
+[schemes.tokyo-night-storm.primary]
+background = "0x24283b"
+foreground = "0xa9b1d6"
+
+[window.dimensions]
+columns = 85
+lines = 21
+
+[window.padding]
+x = 2
+y = 2

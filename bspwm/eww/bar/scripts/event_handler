@@ -1,0 +1,92 @@
+#!/bin/bash
+
+STATES_DIR="/tmp/eww_states"
+EWW_CMD="eww -c $HOME/.config/eww/bar"
+POPUP_CMD="$HOME/.config/eww/bar/scripts/popup"
+WIDGET_NAME="$2"
+HOVER_FLAG="$3"
+
+CRIT_FILE="$STATES_DIR/$WIDGET_NAME.crit"
+POPUP_FILE="$STATES_DIR/$WIDGET_NAME.popup"
+MOUSE_FILE="$STATES_DIR/$HOVER_FLAG.mouse"
+
+if [ ! -d $STATES_DIR ]; then mkdir -p $STATES_DIR; fi
+
+toggle_eww_flag() {
+  flag_name="$1"
+  new_flag_value="$2"
+
+  if [[ "$new_flag_value" == "" ]]; then
+    cur_flag_value=$($EWW_CMD get $flag_name)
+
+    if [[ "$cur_flag_value" == "true" ]]; then
+      new_flag_value="false"
+    elif [[ "$cur_flag_value" == "false" ]]; then
+      new_flag_value="true"
+    fi
+  fi
+
+  $EWW_CMD update $flag_name=$new_flag_value
+}
+
+hover() {
+  if [[ -f $MOUSE_FILE ]]; then
+    rm $MOUSE_FILE
+  else
+    touch $MOUSE_FILE
+  fi
+
+  if [[ -f $CRIT_FILE || -f $POPUP_FILE ]];then
+    exit
+  fi
+
+  toggle_eww_flag "${HOVER_FLAG}_rev" $1
+}
+
+crit() {
+  rev_value=""
+
+  if [[ "$1" == "off" && -f $CRIT_FILE ]]; then
+    rm $CRIT_FILE
+    rev_value="false"
+  elif [[ "$1" == "on" && ! -f $CRIT_FILE ]]; then
+    touch $CRIT_FILE
+    rev_value="true"
+  fi
+
+  if [[ "$rev_value" != "" ]]; then
+    toggle_eww_flag "${HOVER_FLAG}_rev" $rev_value
+  fi
+}
+
+popup() {
+  if [ -f $POPUP_FILE ]; then
+    rev_value="false"
+    rm $POPUP_FILE
+  else
+    rev_value="true"
+    touch $POPUP_FILE
+  fi
+
+  $EWW_CMD open --toggle $WIDGET_NAME
+
+  if [[ ! -f $CRIT_FILE && ! -f $MOUSE_FILE ]]; then
+    toggle_eww_flag "${HOVER_FLAG}_rev" $rev_value
+  fi
+}
+
+case $1 in
+  "crit")
+    crit $4
+  ;;
+  "hover")
+    hover $4
+  ;;
+  "popup")
+    popup
+  ;;
+  "*")
+    exit
+  ;;
+esac
+

@@ -1,0 +1,8 @@
+(defwidget workspaces []
+
+  (box :class "offset_bar_icon"
+       :orientation "v"
+
+	  (literal :content workspace)
+  )
+)

@@ -1,0 +1,28 @@
+(defwidget bat []
+
+ (eventbox :onhover "scripts/event_handler hover bat bat true"
+           :onhoverlost "scripts/event_handler hover bat bat false"
+
+	  (box :orientation "v"
+         :space-evenly "false"
+
+      (revealer :transition "slideup"
+                :reveal bat_rev
+                :duration "350ms"
+
+        (label :class "bar_text" 
+               :text battery-cappacity
+               :halign "center"
+        )
+      )
+
+	    (button :class "bar_icon"
+              :onclick "scripts/battery remaining"
+              :onrightclick "scripts/battery mouse"
+              :onmiddleclick "scripts/battery toggle_notify_lock"
+              :halign "center"
+              battery
+      )
+    )
+  )
+)

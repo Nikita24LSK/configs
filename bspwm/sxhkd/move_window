@@ -1,0 +1,22 @@
+#!/bin/bash
+
+floating_offsets=("-30 0" "0 30" "0 -30" "30 0")
+tiled_offsets=("west" "south" "north" "east")
+
+is_tiled=$(bspc query -N -n "focused.tiled")
+is_floating=$(bspc query -N -n "focused.floating")
+
+modifier=$1
+offset_index=$2
+
+if [[ "$is_floating" != "" && "$modifier" == "focus" ]]; then
+  bspc node -f ${tiled_offsets[$offset_index]}
+elif [[ "$is_floating" != "" && "$modifier" == "move" ]]; then
+  bspc node -v ${floating_offsets[$offset_index]}
+elif [[ "$is_tiled" != "" && "$modifier" == "focus" ]]; then
+  tiled_modifier="-f"
+  bspc node -f ${tiled_offsets[$offset_index]}
+elif [[ "$is_tiled" != "" && "$modifier" == "move" ]]; then
+  bspc node -s ${tiled_offsets[$offset_index]}
+fi
+  

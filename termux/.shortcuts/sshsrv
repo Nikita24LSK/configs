@@ -1,0 +1,32 @@
+#!/bin/env bash
+
+function get_ip() {
+  ip=$(ifconfig 2> /dev/null | grep "inet" | awk '{print $2}' | tail -n1)
+
+  echo $ip
+}
+
+function get_port() {
+  port=$(cat $PREFIX/etc/ssh/sshd_config | grep -E "^Port" | awk '{print $2}')
+  [ "$port" == "" ] && port="8022"
+
+  echo $port
+}
+
+if [ "$(ps -A | grep sshd)" != "" ]; then
+  echo -e "SSHD already working!\n"
+  read -p "Press any key to exit..."
+else
+  termux-wake-lock
+  sshd
+  echo -e "SSHD was started!\n"`
+         `"IP address: $(get_ip)\n"`
+         `"Port: $(get_port)\n"`
+         `"User: $(whoami)\n\n"
+
+  read -p "Press any key to stop SSHD"
+
+  pkill sshd
+  echo -e "SSHD was stopped!\n\n"
+fi
+

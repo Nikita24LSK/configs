@@ -1,0 +1,20 @@
+#!/bin/env bash
+
+SRC_DIR="/data/data/com.termux/files/home/frida"
+DEST_DIR="/data/local/tmp"
+
+[ ! -f /data/local/tmp/frida-server ] && su -c "cp $SRC_DIR/frida-server $DEST_DIR/"
+
+[ ! -f /data/local/tmp/frida-inject ] && su -c "cp $SRC_DIR/frida-inject $DEST_DIR/"
+
+[ ! -f /data/local/tmp/cert-der.crt ] && su -c "cp $SRC_DIR/cert-der.crt $DEST_DIR/"
+
+if [ "$(su -c "ps -A" | grep frida-server)" == "" ]; then
+  termux-toast -b black -g top "Frida was started"
+  termux-wake-lock
+  su -c "$DEST_DIR/frida-server"
+else
+  su -c "killall frida-server"
+  termux-toast -b black -g top "Frida was stopped"
+fi
+

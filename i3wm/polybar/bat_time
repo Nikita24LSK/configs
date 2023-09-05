@@ -1,0 +1,6 @@
+#!/bin/bash
+
+status=$(acpi | grep -Eo "Charging|Discharging")
+time_str=$(acpi | grep -Eo "[0-9]*:[0-9]*:[0-9]*")
+
+notify-send -t 1500 -i dialog-info "$status" "Remaining time $time_str"

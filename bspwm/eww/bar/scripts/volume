@@ -1,0 +1,79 @@
+#!/bin/bash
+
+EWW_CMD="eww -c $HOME/.config/eww/bar"
+
+get_volume() {
+  echo $(amixer -D pulse sget Master | grep -E 'Left:|Mono:' | awk -F'[][]' '{ print $2 }' | tr -d '%') 
+}
+
+get_volume_icon() {
+  val=$(get_volume)
+  
+  state=$(amixer -D pulse get Master 1+ | tail -n1 | cut -d" " -f8)
+  if [ "$state" == "[off]" ]; then
+    echo "󰝟"
+  elif [ "$val" -gt "70" ]; then
+    echo ""
+  elif [ "$val" -gt "30" ]; then
+    echo ""
+  elif [ "$val" -ge "0" ]; then
+    echo ""
+  fi
+}
+
+update_volume_icon() {
+  $EWW_CMD update volume_icon="$(get_volume_icon)"
+}
+
+mute() {
+  res=$(amixer -D pulse set Master 1+ toggle | tail -n1 | cut -d" " -f8)
+
+  if [ "$res" == "[off]" ];then
+    $EWW_CMD update volume_icon="󰝟"
+  else
+    update_volume_icon
+  fi
+}
+
+subscribe() {
+  get_volume
+  update_volume_icon
+  touch /tmp/eww_volume
+  close_reveal &
+
+  pactl subscribe | grep --line-buffered "sink" | while read -r event; do
+    echo $(get_volume)
+
+    update_volume_icon
+
+    $EWW_CMD update volume_rev=true
+    echo $(date +%s) > /tmp/eww_volume
+  done
+}
+
+close_reveal() {
+  while true; do
+    sleep 1
+
+    cur_time=$(date +%s)
+    last_time=$(cat /tmp/eww_volume)
+
+    if [ "$last_time" != "0" ]; then
+      if (( (cur_time - last_time) >= 2 )); then
+        $EWW_CMD update volume_rev=false
+        echo 0 > /tmp/eww_volume
+      fi
+    fi
+  done
+}
+
+if [ "$1" == "initial" ]; then
+  get_volume_icon
+elif [ "$1" == "popup" ]; then
+  pavucontrol &
+elif [ "$1" == "mute" ]; then
+  mute
+elif [ "$1" == "subscribe" ]; then
+  subscribe
+fi
+

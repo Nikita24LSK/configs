@@ -1,0 +1,14 @@
+#!/bin/env bash
+
+check_sys_rw=$(cat /proc/mounts | grep -o "/system/bin tmpfs rw")
+
+if [ "$check_sys_rw" == "" ]; then
+  new_status="rw"
+  su -mm -c magic_remount_rw > /dev/null
+else
+  new_status="ro"
+  su -mm -c magic_remount_ro > /dev/null
+fi
+
+termux-toast -b black -g top "System partitions remounted as $new_status"
+
