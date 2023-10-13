@@ -1,5 +1,6 @@
 #!/bin/bash
 
+CUSTOM_IMAGES_DIR=$ANDROID_HOME/custom_images
 HAS_AVD=false
 BURP_FLAG=false
 VERBOSE=false
@@ -45,6 +46,11 @@ do
       EMU_PARAMS=$EMU_PARAMS" -phone-number "$2
       shift 2
     ;;
+    "timezone")
+      echo "Timezone option detected"
+      EMU_PARAMS=$EMU_PARAMS" -timezone "$2
+      shift 2
+    ;;
     "wipe")
       echo "Wipe data option detected"
       EMU_PARAMS=$EMU_PARAMS" -wipe-data"
@@ -61,6 +67,11 @@ do
       ORIGINAL_SYS=true
       shift
     ;;
+   "dns")
+      echo "DNS option detected"
+      EMU_PARAMS=$EMU_PARAMS" -dns-server "$2
+      shift 2
+    ;;
    "no_edit")
      echo "No edit emu params option detected"
      EDIT_PARAMS=false
@@ -70,10 +81,12 @@ do
      echo -e "Usage this options:\n" \
        "avd - specify AVD name\n" \
        "burp - start emulator with localhost:8080 proxy for BurpSuite\n" \
+       "dns \"dns-server-address\" - use custom DNS server\n" \
        "no_edit - disable editing of emulator parameters\n" \
        "proxy \"login:password@host:port\" - specify emulator proxy\n" \
        "phone \"number\" - set phone number to emulator\n" \
        "sys - use original (non-modified) system image\n" \
+       "timezone - set timezone\n" \
        "tcpdump \"path/to/dumpfile\" - sniff emulator network traffic to file\n" \
        "verbose - run emulator in verbose mode\n" \
        "wipe - wipe userdata of emulator" 
@@ -93,17 +106,39 @@ if [ "$HAS_AVD" == "false" ]; then
   echo ""
 fi
 
-emu_info=$(avdmanager list avd | grep -A 2 $AVD_NAME | tail -n1)
-version=$(echo $emu_info | grep -Po "Android \d{2}\.\d" | grep -Po "\d{2}\.\d")
-android_abi=${emu_info##*/}
+IFS_DEFAULT=$IFS
+IFS="---------"
+
+all_avds=($(avdmanager list avd))
+for i in "${all_avds[@]}"; do
+  if [ "$(grep "Name: $AVD_NAME" <<< $i)" != "" ]; then
+    avd_info=$(grep -E "Based on:.+" <<< $i)
+    android_version=$(awk 'match($5, /[^\(\)"]+/) {print substr($5, RSTART, RLENGTH)}' <<< $avd_info)
+    tag_abi=$(awk '{print $7}' <<< $avd_info)
+    avd_tag=${tag_abi%%/*}
+    avd_abi=${tag_abi##*/}
+    break 
+  fi
+done
+
+IFS=$IFS_DEFAULT
 
 android_api=""
-case $version in
-  "10.0")
-    android_api="android-29"
+case $android_version in
+  "P")
+    android_api="android-28"
   ;;
-  "11.0")
-    android_api="android-30"
+  "Q")
+     android_api="android-29"
+  ;;
+  "R")
+     android_api="android-30"
+  ;;
+  "S")
+     android_api="android-31"
+  ;;
+  "Sv2")
+     android_api="android-32"
   ;;
   "*")
     echo "Detect unsupported version of Android!"
@@ -112,7 +147,7 @@ case $version in
 esac
 
 if [ "$ORIGINAL_SYS" == "false" ]; then
-  EMU_PARAMS=$EMU_PARAMS" -system $HOME/work/android/emulator_images/$android_api/$android_abi/system.img"
+  EMU_PARAMS=$EMU_PARAMS" -system $CUSTOM_IMAGES_DIR/$android_api/$avd_tag/$avd_abi/system.img"
 fi
 
 EMU_PARAMS=$EMU_PARAMS" -writable-system -delay-adb -no-audio -no-boot-anim -ranchu -no-snapstorage -avd $AVD_NAME"

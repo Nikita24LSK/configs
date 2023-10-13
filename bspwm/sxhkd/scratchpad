@@ -1,0 +1,119 @@
+#!/bin/env bash
+
+IDS_FILE=/tmp/scratchpad.wid
+
+function get_main_id() {
+  cat "$IDS_FILE" | grep "main" | awk '{print $2}'
+}
+
+function get_pinned_ids() {
+  cat "$IDS_FILE" | grep "pinned" | awk '{print $2}'
+}
+
+function get_child_ids() {
+  scratchpad_id=$(get_main_id)
+  child_ids=($(xwininfo -id "$scratchpad_id" -children | grep -Eo "[ ]{5}0x[0-9a-f]{7}" | xargs))
+  echo "${child_ids[@]}"
+}
+
+function get_root_id() {
+  scratchpad_id=$(get_main_id)
+  echo "$(xwininfo -root -id "$scratchpad_id" | grep "Window id" | awk '{print $4}')"
+}
+
+function insert_window() {
+  win_id=$1
+  scratchpad_id=$2
+
+  scratchpad_size=($(xwininfo -id $scratchpad_id | grep "geometry" | grep -Eo "[0-9]+x[0-9]+" | tr "x" " "))
+
+  [ "$(bspc query -N -n "$win_id.floating")" == "" ] && bspc node $win_id -t floating
+  xdotool windowsize --sync $win_id ${scratchpad_size[0]} ${scratchpad_size[1]}
+  xdotool windowunmap $win_id
+  xdotool windowreparent $win_id $scratchpad_id
+  xdotool windowmap $win_id
+}
+
+function start() {
+  scratchpad_id=$(tabbed -c -d -k -n "scratchpad")
+
+  alacritty --class "float_alacritty" --embed $scratchpad_id -e vim &
+  sleep 0.1
+
+  alacritty --class "float_alacritty" --embed $scratchpad_id -e python &
+  sleep 0.1
+
+  alacritty --class "float_alacritty" --embed $scratchpad_id &
+  sleep 0.1
+
+  echo "main: $scratchpad_id" > "$IDS_FILE"
+  child_ids=($(get_child_ids))
+
+  for i in "${child_ids[@]}"; do
+    echo "pinned: $i" >> "$IDS_FILE"
+  done
+}
+
+function attach_window() {
+  win_id=$(bspc query -N -n)
+  scratchpad_id=$(get_main_id)
+
+  (( $win_id == $scratchpad_id )) && exit
+
+  if [ "$(bspc query -N -n "$scratchpad_id.hidden")" == "" ]; then
+    insert_window $win_id $scratchpad_id
+  else
+    toggle
+    insert_window $win_id $scratchpad_id
+    toggle
+  fi
+}
+
+function detach_window() {
+  scratchpad_id=$(get_main_id)
+
+  if [ "$(bspc query -N -n "$scratchpad_id.hidden")" == "" ]; then
+    child_ids=($(get_child_ids))
+    root_id=$(get_root_id)
+    first_child="${child_ids[0]}"
+    is_pinned=$(cat "$IDS_FILE" | grep "$first_child")
+
+    if [ "$is_pinned" == "" ]; then
+      xdotool windowunmap $first_child
+      xdotool windowreparent $first_child $root_id
+      xdotool windowmap $first_child
+    else
+      notify-send "Error!" "Window is pinned!"
+    fi
+  else
+    notify-send "Error" "Scratchpad is hidden"
+  fi
+}
+
+function toggle() {
+  scratchpad_id=$(get_main_id)
+  bspc node "$scratchpad_id" -g hidden
+
+  if [ "$(bspc query -N -n "$scratchpad_id.hidden")" == "" ]; then
+    bspc node "$scratchpad_id" -f
+  fi
+}
+
+function pinning() {
+  child_ids=($(get_child_ids))
+  first_child="${child_ids[0]}"
+  is_pinned=$(cat "$IDS_FILE" | grep "$first_child")
+
+  if [ "$is_pinned" == "" ]; then
+    echo "pinned: $first_child" >> $IDS_FILE
+  else
+    sed -i "/pinned: $first_child/d" $IDS_FILE
+  fi
+}
+
+[ "$1" == "start" ] && start
+[ "$1" == "attach" ] && attach_window
+[ "$1" == "detach" ] && detach_window
+[ "$1" == "toggle" ] && toggle
+[ "$1" == "pin" ] && pinning
+

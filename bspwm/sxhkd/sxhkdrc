@@ -21,13 +21,13 @@ super + alt + b
 	firefox
 
 super + alt + c
-  /home/nikita/.config/eww/bar/scripts/event_handler popup calendar time
+  /home/nikita/.config/eww/bar_horizontal/scripts/event_handler popup calendar time
 
 super + alt + n
 	obsidian
 
 super + alt + m
-   /home/nikita/.config/eww/bar/scripts/event_handler popup metrics cpuram
+   /home/nikita/.config/eww/bar_horizontal/scripts/event_handler popup metrics cpuram
 
 super + alt + v
 	virtualbox
@@ -81,7 +81,7 @@ super + shift + s
   pkill -USR1 -x sxhkd
 
 #ВЫЙТИ/ПЕРЕЗАГРУЗИТЬ BSPWM
-super + shift + {e,r}
+super + shift + {e,o}
   bspc {quit,wm -r}
 
 #ПЕРЕХОД В РЕЖИМ МОНОКЛЯ И ОБРАТНО
@@ -194,13 +194,18 @@ ctrl + shift + {1,2,3,4,5,6,7,8,9}
   /home/nikita/.config/sxhkd/move_float {1,2,3,4,5,6,7,8,9}
 
 #SCRATCHPAD
-super + shift + minus
-  id=$(bspc query -N -n); \
-  is_floating=$(bspc query -N -n "focused.floating"); \
-  if [[ "$is_floating" == "" ]]; then \
-    bspc node -t floating \
-  fi; \
-  bspc node $id --flag hidden=on
+super + minus
+  /home/nikita/.config/sxhkd/scratchpad detach
+
+super + underscore
+  /home/nikita/.config/sxhkd/scratchpad pin
+
+super + equal
+  /home/nikita/.config/sxhkd/scratchpad toggle
+
+super + plus
+  /home/nikita/.config/sxhkd/scratchpad attach
+
 
 ###########################################
 #### УПРАВЛЕНИЕ МУЛЬТИМЕДИА КЛАВИШАМИ  ####

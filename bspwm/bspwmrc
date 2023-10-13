@@ -4,17 +4,17 @@
 sxhkd &
 numlockx &
 xsetroot -cursor_name left_ptr
-$HOME/.fehbg
-$HOME/.config/eww/bar/scripts/weather get &
-eww -c ~/.config/eww/bar open bar
-$HOME/.config/eww/bar/scripts/metrics subscribe &
 picom -b
+$HOME/.fehbg
+$HOME/.config/eww/bar_horizontal/scripts/weather get &
+$HOME/.config/eww/bar_horizontal/scripts/metrics subscribe &
+$HOME/.config/eww/bar_horizontal/scripts/task_manager monitor
+eww -c ~/.config/eww/bar_horizontal open bar
 copyq &
 lxqt-policykit-agent &
 nm-applet &
 blueman-applet &
 udiskie -f vifmlaunch --tray &
-$HOME/.config/eww/bar/scripts/task_manager monitor
 
 #ВОРКСПЕЙСЫ
 bspc monitor -d 1 2 3 4 5
@@ -51,7 +51,6 @@ bspc config paddingless_monocle	 true
 #СХЕМЫ СОГЛАСНО КОТОРЫМ БУДУТ ОТКРЫВАТСЯ ОКНА
 # bspc config automatic_scheme alternate
 
-
 #ПРАВИЛА ОКОН
 bspc rule -a firefox rectangle=1200x771+355+181
 bspc rule -a tabbed rectangle=828x451+533+324
@@ -76,3 +75,6 @@ bspc rule -a VirtualBox state=floating
 bspc rule -a Hubstaff state=floating
 bspc config external_rules_command /home/nikita/.config/bspwm/external_rules
 
+sleep 0.5
+
+$HOME/.config/sxhkd/scratchpad start

@@ -2,7 +2,7 @@
 
 STATES_DIR="/tmp/eww_states"
 EWW_CMD="eww -c $HOME/.config/eww/bar"
-POPUP_CMD="$HOME/.config/eww/bar/scripts/popup"
+POPUP_CMD="$HOME/.config/eww/bar_vertical/scripts/popup"
 WIDGET_NAME="$2"
 HOVER_FLAG="$3"
 

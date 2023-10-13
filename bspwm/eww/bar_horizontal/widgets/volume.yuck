@@ -1,0 +1,32 @@
+(defwidget volume []
+
+  (eventbox :onhover "scripts/event_handler hover volume volume true && touch /tmp/eww_volume"
+            :onhoverlost "scripts/event_handler hover volume volume false"
+
+    (box :orientation "h"
+         :space-evenly "false"
+         :valign "start"
+         :spacing 5
+
+      (revealer :orientation "h"
+                :transition "slideleft"
+                :reveal volume_rev
+                :duration "350ms"
+
+        (label :class "bar_text" 
+               :valign "center"
+               :halign "end"
+               :text volume_percent
+        )
+      )
+
+      (button :onclick "scripts/volume mute"
+              :onrightclick "scripts/volume popup"
+              :class "bar_icon"
+              :valign "start"
+
+        volume_icon
+      )
+    )
+  )
+)

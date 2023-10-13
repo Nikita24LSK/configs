@@ -1,0 +1,22 @@
+(defwidget cal []
+
+	(box :class "cal-box" 
+		   :orientation "h"
+       :spacing 10
+       :vexpander "true"
+
+	  (box :class "cal-inner-box"
+
+	    (calendar :class "cal" 
+			          :day calendar_day 
+			          :month calendar_month 
+			          :year calendar_year
+                :onclick "echo {0}.{1}.{2} > /tmp/tasks_pipe"
+                :onrightclick "scripts/task_manager create {0}.{1}.{2}"
+      )
+    )
+
+    (literal :content tasks)
+  )
+)
+

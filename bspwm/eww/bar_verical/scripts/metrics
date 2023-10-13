@@ -23,7 +23,7 @@ subscribe() {
       crit_state=off
     fi
 
-    $HOME/.config/eww/bar/scripts/event_handler crit metrics cpuram $crit_state
+    $HOME/.config/eww/bar_vertical/scripts/event_handler crit metrics cpuram $crit_state
 
     sleep 1
   done

@@ -1,9 +1,12 @@
 #!/bin/bash
 
 wid=$1
+wclass=$(xprop -id $wid | grep WM_CLASS | grep -Eo "\"[^, ]+\"" | head -n1)
 title=$(xtitle "$wid")
 
-[[ "$title" == 'Android Emulator -'* ]] && echo "state=pseudo_tiled rectangle=320x640-63+220"
+[[ "$wclass" == '"scratchpad"' ]] && echo "hidden=true state=floating sticky=true locked=true"
+
+[[ "$title" == 'Emulator' ]] && (( $(xprop -id $wid | grep "user specified size" | awk '{print $4}') > 70 )) && echo "state=pseudo_tiled rectangle=320x640-63+237"
 
 [[ "$title" == *' - TigerVNC' ]] && [[ ! $(echo $title | grep -Eo "\([^)]+\)") ]] && echo "rectangle=417x697+447+129"
 

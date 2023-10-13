@@ -1,9 +1,9 @@
 #!/bin/bash
 
-EWW_CMD="eww -c $HOME/.config/eww/bar"
+EWW_CMD="eww -c $HOME/.config/eww/bar_horizontal"
 
 get_volume() {
-  echo $(amixer -D pulse sget Master | grep -E 'Left:|Mono:' | awk -F'[][]' '{ print $2 }' | tr -d '%') 
+  echo $(amixer -D pulse sget Master | grep -E 'Left:|Mono:' | awk -F'[][]' '{ print $2 }' | tr -d '%')
 }
 
 get_volume_icon() {
@@ -42,7 +42,7 @@ subscribe() {
   close_reveal &
 
   pactl subscribe | grep --line-buffered "sink" | while read -r event; do
-    echo $(get_volume)
+    echo " $(get_volume)"
 
     update_volume_icon
 

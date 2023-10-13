@@ -1,0 +1,144 @@
+// Global
+*{
+  all: unset;
+}
+
+$global_font_family: JetBrainsMono Nerd Font;
+
+$metrics_icon_fontsize: 15pt;
+$metrics_text_fontsize: 12pt;
+
+$bar_icon_fontsize: 15pt;
+$bar_text_fontsize: 12pt;
+
+// Variable Color's
+$background: rgba(00, 00, 00, 50%);
+$cal_background: rgba(00, 00, 00, 80%);
+$foreground: #ffffff; //  #cbccc6;
+
+$black: #000000;
+$gray: #5c5c5c;
+$red: #FE0100;
+$green: #33FF00;
+$yellow: #FEFF00;
+$blue: #0066FF;
+$magenta: #CC00FF;
+$cyan: #00FFFF;
+$white: #ffffff;
+
+// EWW BAR
+.eww_bar {
+  border-radius: 15px;
+  background: $background;
+  padding: .0rem 25 .0rem 25;
+}
+
+.bar_icon {
+  font-family: $global_font_family;
+  font-size: $bar_icon_fontsize;
+  padding: .0rem 6 .0rem 0;
+}
+
+.bar_text {
+  font-family: $global_font_family;
+  font-size: $bar_text_fontsize;
+  font-weight: bold;
+}
+
+.metrics_box {
+  background-color: $background;
+  border-radius: 10px;
+  padding: 5px 15px 15px 15px;
+}
+
+.metrics_icon {
+  font-family: $global_font_family;
+  font-size: $metrics_icon_fontsize;
+}
+
+.metrics_text {
+  font-family: $global_font_family;
+  font-size: $metrics_text_fontsize;
+  font-weight: bold;
+  margin: .0rem 25 .0rem 0;
+}
+
+.layout_box {
+  font-family: $global_font_family;
+  font-size: $bar_text_fontsize;
+  padding: .0rem 0 .0rem 5;
+}
+
+// Workspaces
+.works {
+  font-family: $global_font_family;
+  font-size: $bar_text_fontsize;
+}
+
+/* Unoccupied */
+.ws_0 {
+  color: #747d84;
+}
+
+/* Occupied */
+.ws_01, .ws_02, .ws_03, .ws_04, .ws_05 {
+  color: $foreground; // #bfc9db;
+}
+
+/* Focused */
+.ws_011, .ws_022, .ws_033, .ws_044, .ws_055 {
+  color: $foreground; // #a1bdce;
+}
+
+// Calendar
+.cal-box {
+  background-color: $cal_background;
+  font-family: JetBrainsMono Nerd Font;
+  font-size: $bar_text_fontsize;
+  font-weight: bold;
+  border-radius: 10px;
+
+  .cal-inner-box {
+      padding: 0.1rem 0.1rem 0.2rem;
+
+      .cal {
+          &.highlight {
+              padding: 5rem;
+          }
+
+          padding: .8rem .25rem 0rem;
+          margin-left: 5px;
+      }
+  }
+}
+
+calendar:selected {
+  color: $green;
+}
+
+.calendar-day {
+  color: $red;
+}
+
+calendar.header {
+color: $white;
+font-weight: bold;
+font-size: $bar_text_fontsize;
+}
+
+calendar.button {
+color: $yellow;
+font-size: $bar_text_fontsize;
+}
+
+calendar.highlight {
+color: $blue;
+font-weight: bold;
+font-size: $bar_text_fontsize;
+}
+
+calendar:indeterminate {
+color: $gray;
+font-size: $bar_text_fontsize;
+}
+

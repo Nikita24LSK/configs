@@ -12,13 +12,13 @@ if [ "$per" -e "100" ]; then
 	  icon="󰂅"
 
     if [ ! -f $crit_file ]; then
-      $HOME/.config/eww/bar/scripts/event_handler crit bat bat on
+      $HOME/.config/eww/bar_vertical/scripts/event_handler crit bat bat on
     fi
   else
 	  icon="󰂃"
 
     if [ -f $crit_file ]; then
-      $HOME/.config/eww/bar/scripts/event_handler crit bat bat off
+      $HOME/.config/eww/bar_vertical/scripts/event_handler crit bat bat off
     fi
   fi
 elif [ "$per" -gt "90" ]; then
@@ -27,13 +27,13 @@ elif [ "$per" -gt "90" ]; then
 	  icon="󰂋"
 
     if [ ! -f $crit_file ]; then
-      $HOME/.config/eww/bar/scripts/event_handler crit bat bat on
+      $HOME/.config/eww/bar_vertical/scripts/event_handler crit bat bat on
     fi
   else
 	  icon="󰂂"
 
     if [ -f $crit_file ]; then
-      $HOME/.config/eww/bar/scripts/event_handler crit bat bat off
+      $HOME/.config/eww/bar_vertical/scripts/event_handler crit bat bat off
     fi
   fi
 elif [ "$per" -gt "80" ]; then
@@ -83,7 +83,7 @@ elif [ "$per" -gt "10" ]; then
 	  icon="󰢜"
 
     if [ -f $crit_file ]; then
-      $HOME/.config/eww/bar/scripts/event_handler crit bat bat off
+      $HOME/.config/eww/bar_vertical/scripts/event_handler crit bat bat off
     fi
   else
 	  icon="󰁺"
@@ -93,14 +93,14 @@ elif [ "$per" -gt "0" ]; then
 	  icon="󰢟"
 
     if [ -f $crit_file ]; then
-      $HOME/.config/eww/bar/scripts/event_handler crit bat bat off
+      $HOME/.config/eww/bar_vertical/scripts/event_handler crit bat bat off
     fi
   else
 	  [ ! -f /tmp/eww_states/notify.lock ] && notify-send -t 2000 -u critical "Battery Low" "Connect Charger"
 	  icon="󱃍"
 
     if [ ! -f $crit_file ]; then
-      $HOME/.config/eww/bar/scripts/event_handler crit bat bat on
+      $HOME/.config/eww/bar_vertical/scripts/event_handler crit bat bat on
     fi
   fi
 fi

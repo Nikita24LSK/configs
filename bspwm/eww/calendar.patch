@@ -1,8 +1,8 @@
 diff --git a/crates/eww/src/widgets/widget_definitions.rs b/crates/eww/src/widgets/widget_definitions.rs
-index 2cdc907..c01d904 100644
+index 07a081d..7172f2a 100644
 --- a/crates/eww/src/widgets/widget_definitions.rs
 +++ b/crates/eww/src/widgets/widget_definitions.rs
-@@ -920,6 +920,7 @@ const WIDGET_NAME_CALENDAR: &str = "calendar";
+@@ -927,6 +927,7 @@ const WIDGET_NAME_CALENDAR: &str = "calendar";
  /// @desc A widget that displays a calendar
  fn build_gtk_calendar(bargs: &mut BuilderArgs) -> Result<gtk::Calendar> {
      let gtk_widget = gtk::Calendar::new();
@@ -10,12 +10,7 @@ index 2cdc907..c01d904 100644
      def_widget!(bargs, _g, gtk_widget, {
          // @prop day - the selected day
          prop(day: as_f64) {
-@@ -950,15 +951,14 @@ fn build_gtk_calendar(bargs: &mut BuilderArgs) -> Result<gtk::Calendar> {
-         // @prop onclick - command to run when the user selects a date. The `{0}` placeholder will be replaced by the selected day, `{1}` will be replaced by the month, and `{2}` by the year.
-         // @prop timeout - timeout of the command. Default: "200ms"
-         prop(timeout: as_duration = Duration::from_millis(200), onclick: as_string) {
--            connect_signal_handler!(gtk_widget, gtk_widget.connect_day_selected(move |w| {
-+            connect_signal_handler!(gtk_widget, gtk_widget.connect_day_selected_double_click(move |w| {
+@@ -961,11 +962,20 @@ fn build_gtk_calendar(bargs: &mut BuilderArgs) -> Result<gtk::Calendar> {
                  run_command(
                      timeout,
                      &onclick,
@@ -24,8 +19,18 @@ index 2cdc907..c01d904 100644
 +                    &[w.day(), w.month() + 1, w.year()]
 +                );
              }));
-         }
--
+-        }
++        },
+ 
++        prop(timeout: as_duration = Duration::from_millis(200), onrightclick: as_string) {
++            connect_signal_handler!(gtk_widget, gtk_widget.connect_day_selected_double_click(move |w| {
++                run_command(
++                    timeout,
++                    &onrightclick,
++                    &[w.day(), w.month() + 1, w.year()]
++                );
++            }));
++        }
      });
  
      Ok(gtk_widget)

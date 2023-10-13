@@ -1,0 +1,14 @@
+(defwidget layout []
+
+  (box :class "layout_box"
+       :orientation "h"
+       :spacing 1
+       :space-evenly "false" 
+       :valign "center"
+       
+    (label :class "bar_text"
+           :valign "center"
+           :text lay
+    )
+  )
+)

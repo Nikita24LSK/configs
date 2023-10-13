@@ -1,0 +1,23 @@
+#!/bin/bash
+
+next_val() {
+  if [[ "$1" == "" ]]; then
+    num=$(xset -q | grep 'LED' | awk '{ print $10 }')
+    if [[ "$num" == "00000000" ]]; then
+      res="US"
+    else
+      res="RU"
+    fi
+  elif [[ "$1" == "0" ]]; then
+    res="US"
+  else
+    res="RU"
+  fi
+  
+  echo $res
+}
+
+next_val
+$HOME/.config/eww/bar_vertical/scripts/catch_layout | while read -r num; do
+  next_val $num
+done

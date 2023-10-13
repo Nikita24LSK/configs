@@ -1,0 +1,33 @@
+#!/bin/bash
+
+CACHE_FILE="/tmp/weather.json"
+
+get_weather(){
+  api_key=df1117db2e04f99c3ff4c5654dc75706
+  city_id=1502026
+
+  url="api.openweathermap.org/data/2.5/weather?id=${city_id}&appid=${api_key}&cnt=5&units=metric&lang=en"
+
+  while true; do
+    curl ${url} -s -o ${CACHE_FILE}
+    sleep 900
+  done
+}
+
+if [[ "$1" == "get" ]]; then
+  get_weather
+else
+  if [ ! -f $CACHE_FILE ]; then
+    echo "-"
+    exit
+  fi
+
+  if [[ "$1" == "temp" ]]; then
+    echo $(cat $CACHE_FILE | jq .main.temp)󰔄
+  elif [[ "$1" == "wind" ]]; then
+    echo $(cat $CACHE_FILE | jq .wind.speed)m/s
+  elif [[ "$1" == "humidity" ]]; then
+    echo $(cat $CACHE_FILE | jq .main.humidity)%
+  fi
+fi
+

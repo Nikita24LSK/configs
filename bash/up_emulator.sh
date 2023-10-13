@@ -1,5 +1,6 @@
 #!/bin/bash
 
+TOOLS_DIR=$ANDROID_HOME/custom_images/tools
 USE_PROXY=false
 APP=false
 USE_EMU_PARAMS=false
@@ -88,6 +89,22 @@ adb root
 echo -e "\nRunning tweaks..."
 adb wait-for-device
 adb shell tweaks
+
+if [ -f $TOOLS_DIR/system_properties ]; then
+  echo -e "\nCopying system properties..."
+  adb wait-for-device
+  adb push $TOOLS_DIR/system_properties /data/local/tmp/
+else
+  echo -e "\nWarning! File \"system_properties\" not found in $TOOLS_DIR! Skipping..."
+fi
+
+if [ -f $TOOLS_DIR/cert-der.crt ]; then
+  echo -e "\nCopying Burp cert..."
+  adb wait-for-device
+  adb push $TOOLS_DIR/cert-der.crt /data/local/tmp
+else
+  echo -e "\nWarning! File \"cert-der.crt\" not found in $TOOLS_DIR! Skipping..."
+fi
 
 if [ "$USE_PROXY" == "true" ]; then
   echo -e "\nSetting proxy..."

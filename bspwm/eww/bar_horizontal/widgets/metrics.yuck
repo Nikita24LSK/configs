@@ -1,0 +1,209 @@
+(defwidget cpuram []
+
+  (box :orientation "h"
+       :valign "center"
+
+    (eventbox :onhover "scripts/event_handler hover metrics cpuram true"
+              :onhoverlost "scripts/event_handler hover metrics cpuram false"
+
+      (box :orientation "h"
+           :valign "center"
+           :space-evenly "false"
+           :spacing 5
+
+        (revealer :transition "slideleft"
+                  :reveal cpuram_rev
+                  :duration "450ms"
+
+          (box :orientation "h"
+               :spacing 5
+
+            (button :onclick "scripts/event_handler popup metrics cpuram"
+              (label  :class "bar_text"
+                      :valign "center"
+                      :text ram
+              )
+            )
+
+            (button :onclick "scripts/event_handler popup metrics cpuram"
+
+              (label :class "bar_icon"
+                     :valign "center"
+                     :text ""
+              )
+            )
+
+            (button :onclick "scripts/event_handler popup metrics cpuram"
+              (label :class "bar_text"
+                     :valign "center"
+                     :text cpu
+              )
+            )
+          )
+        )
+
+        (button :onclick "scripts/event_handler popup metrics cpuram"
+
+          (label :class "bar_icon"
+                 :valign "center"
+                 :text "󰍛"
+          )
+        )
+      )
+    )
+  )
+)
+
+
+(defwidget  sysdata []
+
+  (box :class "metrics_box"
+       :orientation "v"
+       :space-evenly "false"
+       :valign "fill"
+       :halign "fill"
+       :spacing 5
+
+    (box :orientation "h"
+         :space-evenly "false"
+         :halign "fill"
+
+      (label :class "metrics_icon"
+             :text " "
+      )
+
+      (label :class "metrics_text"
+             :text uptime
+      )
+    )
+
+    (box :orientation "h"
+         :space-evenly "false"
+         :halign "fill"
+
+      (label :class "metrics_icon"
+             :text "󰍹 "
+      )
+
+      (label :class "metrics_text"
+             :text host
+      )
+
+      (label :class "metrics_icon"
+             :text " "
+      )
+
+      (label :class "metrics_text"
+             :text {round(bright, 0)}
+      )
+
+      (label :class "metrics_icon"
+             :text "󰇧 "
+      )
+
+      (label :class "metrics_text"
+             :text ipaddr
+      )
+    )
+
+    (box :orientation "h"
+         :space-evenly "false"
+         :halign "fill"
+
+      (label :class "metrics_icon"
+             :text "󰋊 "
+      )
+
+      (label :class "metrics_text"
+             :text {round(EWW_DISK["/"].free / 1024 / 1024 / 1024, 2)}
+      )
+
+      (label :class "metrics_icon"
+             :text "󰋊 "
+      )
+
+      (label :class "metrics_text"
+             :text {round(EWW_DISK["/home"].free / 1024 / 1024 / 1024, 2)}
+      )
+
+      (label :class "metrics_icon"
+             :text " "
+      )
+
+      (label :class "metrics_text"
+             :text {round(((EWW_RAM["total_swap"] - EWW_RAM["free_swap"]) / EWW_RAM["total_swap"]) * 100, 0)}
+      )
+    )
+
+    (box :orientation "h"
+         :space-evenly "false"
+         :halign "fill"
+
+      (label :class "metrics_icon"
+             :text " "
+      )
+
+      (label :class "metrics_text"
+             :text weather_temp
+      )
+
+      (label :class "metrics_icon"
+             :text " "
+      )
+
+      (label :class "metrics_text"
+             :text weather_humidity
+      )
+
+      (label :class "metrics_icon"
+             :text " "
+      )
+
+      (label :class "metrics_text"
+             :text weather_wind
+      )
+    )
+
+    (eventbox :onhover "scripts/event_handler hover topproc topproc true"
+              :onhoverlost "scripts/event_handler hover topproc topproc false"
+
+      (box  :orientation "v"
+            :space-evenly "false"
+
+        (revealer :transition "slideup"
+                  :reveal topproc_rev
+                  :duration "350ms"
+
+          (box :orientation "h"
+               :space-evenly "false"
+
+            (button :class "metrics_icon"
+                    :onclick "scripts/top toggle"
+                    :halign "start"
+
+              {top_work ? "󰓛 " : "󰐊 "}
+            )
+
+            (button :onclick "scripts/top switch"
+                    :halign "start"
+
+              (box :orientation "h"
+                   :space-evenly "false"
+
+                (label :class "metrics_icon"
+                       :text ""
+                )
+
+                (label :class "metrics_text"
+                       :text "${top_switch}"
+                )
+              )
+            )
+          )
+        )
+
+        (literal :content top)
+      )
+    )
+  )
+)
