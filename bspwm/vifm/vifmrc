@@ -77,7 +77,8 @@ filextype *.mp3,*.wav,*.avi,*.mp4 vlc %"f%i&
 nnoremap <c-h> :!r2 -nwc 'V' %"c<cr>
 nnoremap <c-e> :!extract %"D %"f<cr>
 nnoremap <c-b> :!firefox %"d/%"f%i&<cr>
-nnoremap <c-s> :sync<cr>
+nnoremap <c-s>s :sync<cr>
+nnoremap <c-s>S :cd %D %d<cr>
 nnoremap rc :!./%"c %m<cr>
 nnoremap rw :!./%"c%i<cr>
 nnoremap ra :!df -h %m<cr>
@@ -90,8 +91,8 @@ nnoremap <space>j :tabprevious<cr>
 nnoremap <space>k :tabnext<cr>
 nnoremap <space>x :tabclose<cr>
 nnoremap . za
-nnoremap cc :copy<cr>
-nnoremap cm :move<cr>
+nnoremap cc :copy
+nnoremap cm :move
 vnoremap cc :copy<cr>
 vnoremap cm :move<cr>
 nnoremap rf :!file %"f%m<cr>
@@ -116,6 +117,7 @@ mark e /etc/
 mark o /opt/
 mark s /usr/share/
 mark f ~/.ssh/sshfs/
+mark g ~/git
 
 command! diff nvim -d %"f %"F
 command! vim nvim %a

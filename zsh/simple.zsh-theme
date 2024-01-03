@@ -7,11 +7,22 @@ function battery_charge {
   else local bat_color='%B%F{green}'
   fi
 
-  if [[ $bat_status == "Charging" ]]; then local sym_status="+"
-  else local sym_status="-"
+  if [[ $bat_status == "Charging" ]]; then local sym_status="󰂏 "
+  else local sym_status="󰂌 "
   fi
 
   echo  $bat_color$sym_status$bat_percent%%'%F{default}%b'
+}
+
+function git_prompt {
+  branch=$(git_current_branch)
+  is_dirty=$(parse_git_dirty)
+
+  if [[ $branch == "" ]]; then
+    echo ""
+  else
+    echo " ($branch$is_dirty)"
+  fi
 }
 
 if [[ $UID -eq 0 ]]; then
@@ -21,13 +32,14 @@ else
 fi
 
 local user_name='%B%F{$user_color}%n%F{default}%b'
-local user_symbol='%B%F{$user_color}~>%F{default}%b'
-time='%B%F{cyan}%*%F{default}%b'
+local user_symbol='%B%F{$user_color}➜%F{default}%b'
+time='%B%F{cyan}󰥔 %*%F{default}%b'
 
-local current_dir='%B%F{blue}%~%F{default}%b'
-local git_branch='%B%F{yellow}$(git_prompt_info)%F{default}%b'
+local current_dir='%B%F{blue} %~%F{default}%b'
+local git_branch='%B%F{yellow}$(git_prompt)%F{default}%b'
 
 PROMPT="
-${time} \$(battery_charge) ${current_dir}
+${time} \$(battery_charge)
+${current_dir}
 ${git_branch} ${user_symbol} "
 

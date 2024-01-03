@@ -37,6 +37,13 @@ M.mason = {
     -- c/cpp stuff
     "clangd",
     "clang-format",
+
+    -- python stuff
+    "black",
+    "debugpy",
+    "mypy",
+    "ruff",
+    "pyright",
   },
 }
 
@@ -45,7 +52,9 @@ M.nvimtree = {
   git = {
     enable = true,
   },
-
+  filters = {
+    dotfiles = false,
+  },
   renderer = {
     highlight_git = true,
     icons = {

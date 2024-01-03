@@ -5,6 +5,15 @@
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 export QT_QPA_PLATFORMTHEME="qt5ct"
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk/
+export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_SDK_ROOT=$ANDROID_HOME
+export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_HOME/build-tools/33.0.0
+export LIBVIRT_DEFAULT_URI=qemu:///system
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -31,7 +40,7 @@ setopt prompt_subst
 # DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
+DISABLE_UPDATE_PROMPT="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
 # export UPDATE_ZSH_DAYS=13
@@ -54,7 +63,7 @@ setopt prompt_subst
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
 # much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
@@ -72,7 +81,7 @@ setopt prompt_subst
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git zsh-autosuggestions dirhistory zsh-syntax-highlighting sudo zsh-autopair)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -98,15 +107,26 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
+function workcode() {
+  cd ~/work/android-platform-frida/
+  source ./venv/bin/activate
+
+  nvim -c "source $HOME/.config/nvim/lua/custom/scripts/init_workcode.lua" $@
+
+  deactivate
+  cd -
+}
+
 # Aliases
 
-alias polyconf="vim ~/.config/polybar/config"
-alias i3conf="vim ~/.config/i3/config"
+alias termrc="cd ~/.config/alacritty/ && nvim ./alacritty.yml && cd -"
+alias vimrc="cd ~/.config/nvim/lua/custom/ && nvim ./init.lua && cd -"
+alias picomrc="cd ~/.config/picom/ && nvim ./picom.conf && cd -"
+alias bsprc="cd ~/.config/bspwm && nvim ./bspwmrc && cd -"
+alias sxhkdrc="cd ~/.config/sxhkd/ && nvim ./sxhkdrc && cd -"
+alias ewwrc="cd ~/.config/eww/bar_horizontal && nvim ./eww.yuck && cd -"
 alias zshrc="vim ~/.zshrc"
-alias theme="vim ~/.oh-my-zsh/themes/simple.zsh-theme"
 alias sshfs_umount="fusermount3 -u"
-alias manage_cluster="/home/nikita/VirtualBox\ VMs/manage_cluster"
-alias vboxinet="sudo /home/nikita/VirtualBox\ VMs/vboxnet_internet"
 alias pacconf="sudo vim /etc/pacman.conf"
 alias pacup="sudo pacman -Suy"
 alias pacinst="sudo pacman -S"
@@ -119,11 +139,13 @@ alias systatus="sudo systemctl status"
 alias sysenable="sudo systemctl enable"
 alias sysdisable="sudo systemctl disable"
 alias vims="sudo vim"
-alias games="WINEPREFIX=/home/nikita/wine_prefixes/games WINEARCH=win32 wine"
-alias games64="WINEPREFIX=/home/nikita/wine_prefixes/games64 WINEARCH=win64 wine"
-alias gamepref="WINEPREFIX=/home/nikita/wine_prefixes/games WINEARCH=win32"
-alias gamepref64="WINEPREFIX=/home/nikita/wine_prefixes/games64 WINEARCH=win64"
-alias gitpush="git add *; git commit; git push"
+alias vifm="vifmrun"
+alias dimg="docker image ls -a"
+alias dcont="docker container ls -a"
+alias dimgrm="docker image rm"
+alias dcontrm="docker container rm"
+alias appium="PATH=/home/nikita/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/nikita/.local/bin:/home/nikita/Android/Sdk/emulator:/home/nikita/Android/Sdk/platform-tools:/home/nikita/Android/Sdk/cmdline-tools/latest/bin:/home/nikita/Android/Sdk/build-tools/33.0.0 appium"
+alias globpath="PATH=/home/nikita/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/nikita/.local/bin:/home/nikita/Android/Sdk/emulator:/home/nikita/Android/Sdk/platform-tools:/home/nikita/Android/Sdk/cmdline-tools/latest/bin:/home/nikita/Android/Sdk/build-tools/33.0.0"
 
 # Exports of environment variables
 
@@ -132,3 +154,4 @@ export EDITOR=vim
 # Section with history ignore
 
 HISTORY_IGNORE="(reset|history|zshrc|i3conf|polyconf|theme|vboxinet|pacconf)"
+. /opt/asdf-vm/asdf.sh

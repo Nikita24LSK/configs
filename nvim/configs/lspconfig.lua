@@ -1,10 +1,10 @@
-local on_attach = require("plugins.configs.lspconfig").on_attach
-local capabilities = require("plugins.configs.lspconfig").capabilities
+local config = require("plugins.configs.lspconfig")
 
-local lspconfig = require "lspconfig"
-local cmp_nvim_lsp = require "cmp_nvim_lsp"
+local on_attach = config.on_attach
+local capabilities = config.capabilities
 
--- if you just want default config for the servers then put them in a table
+local lspconfig = require("lspconfig")
+
 local servers = { "html", "cssls", "tsserver", "clangd", "pyright" }
 
 for _, lsp in ipairs(servers) do
@@ -13,15 +13,3 @@ for _, lsp in ipairs(servers) do
     capabilities = capabilities,
   }
 end
-
-lspconfig.clangd.setup {
-  on_attach = on_attach,
-  capabilities = cmp_nvim_lsp.default_capabilities(),
-  cmd = {
-    "clangd",
-    "--offset-encoding=utf-16",
-  },
-}
--- 
--- lspconfig.pyright.setup { blabla}
-

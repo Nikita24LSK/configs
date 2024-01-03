@@ -1,44 +1,61 @@
 local overrides = require("custom.configs.overrides")
 
----@type NvPluginSpec[]
 local plugins = {
-
-  -- Override plugin definition options
-
   {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      -- format & linting
-      {
-        "jose-elias-alvarez/null-ls.nvim",
-        config = function()
-          require "custom.configs.null-ls"
-        end,
-      },
-    },
+    "rcarriga/nvim-dap-ui",
+    dependencies = "mfussenegger/nvim-dap",
     config = function()
-      require "plugins.configs.lspconfig"
-      require "custom.configs.lspconfig"
-    end, -- Override to setup mason-lspconfig
+      local dap = require("dap")
+      local dapui = require("dapui")
+      dapui.setup()
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+    end
   },
-
-  -- override plugin configs
+  {
+    "mfussenegger/nvim-dap",
+    config = function(_, opts)
+      require("core.utils").load_mappings("dap")
+    end
+  },
+  {
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+    },
+    config = function(_, opts)
+      local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(path)
+      require("core.utils").load_mappings("dap_python")
+    end,
+  },
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    ft = {"python"},
+    opts = function()
+      return require "custom.configs.null-ls"
+    end,
+  },
   {
     "williamboman/mason.nvim",
     opts = overrides.mason
   },
-
   {
-    "nvim-treesitter/nvim-treesitter",
-    opts = overrides.treesitter,
+    "neovim/nvim-lspconfig",
+    config = function()
+      require "plugins.configs.lspconfig"
+      require "custom.configs.lspconfig"
+    end,
   },
-
-  {
-    "nvim-tree/nvim-tree.lua",
-    opts = overrides.nvimtree,
-  },
-
-  -- Install a plugin
   {
     "max397574/better-escape.nvim",
     event = "InsertEnter",
@@ -46,18 +63,24 @@ local plugins = {
       require("better_escape").setup()
     end,
   },
-
   {
     "nvim-lua/plenary.nvim",
     lazy = false
   },
-
   {
     "sindrets/diffview.nvim",
     lazy = true,
     cmd = "DiffviewOpen",
   },
 
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = overrides.nvimtree,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = overrides.treesitter,
+  },
   {
     'stevearc/aerial.nvim',
     lazy = true,
@@ -77,12 +100,12 @@ local plugins = {
       require("trouble").setup {}
     end
   },
-  -- To make a plugin not be loaded
-  -- {
-  --   "NvChad/nvim-colorizer.lua",
-  --   enabled = false
-  -- },
-
+  { 
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim"
+    }
+  }
 }
-
 return plugins
