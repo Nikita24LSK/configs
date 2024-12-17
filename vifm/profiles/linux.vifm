@@ -1,0 +1,57 @@
+filetype *.ssh FUSE_MOUNT2|sshfs %PARAM %DESTINATION_DIR
+filextype *.pdf,*.djvu,*.fb2,*.epub zathura %"f%i&
+filextype *.torrent transmission-gtk %"f%i&
+filextype *.jpg,*.png,*.bmp feh %"f%i&
+filextype *.doc,*.docx,*.ods libreoffice %"f%i&
+filextype *.xls,*.xlsx libreoffice %"f%i&
+filextype *.ppt,*.pptx libreoffice %"f%i&
+filextype *.pcap,*.pcapng wireshark %"f%i&
+filextype *.burp burpsuite %"f%i&
+filextype *.mkv,*.mp3,*.wav,*.avi,*.mp4 vlc %"f%i&
+filextype *.htm,*.html firefox %"c:p &
+
+if $KITTY_PID
+  fileviewer <image/*>
+      \ kitten icat --silent --transfer-mode=file --place=%pwx%ph@%pxx%py %c >/dev/tty </dev/tty %N
+      \ %pc
+      \ kitten icat --clear --silent >/dev/tty </dev/tty %N
+endif
+
+mark D ~/Desktop
+mark c ~/.config
+mark d ~/Downloads
+mark e /etc/
+mark m /run/media/
+mark o /opt/
+mark r /
+
+nnoremap cE :!imhex %"f%i&<cr>
+
+if $XDG_SESSION_TYPE == 'wayland'
+  " yank current directory path into the clipboard
+  nnoremap yd :!echo -n %"d | wl-copy %i<cr>:echo expand('%"d') "is yanked to clipboard"<cr>
+
+  " yank current file path into the clipboard
+  nnoremap yf :!echo -n %"c:p | wl-copy %i<cr>:echo expand('%"c:p') "is yanked to clipboard"<cr>
+
+  " yank current filename without path into the clipboard
+  nnoremap yn :!echo -n %"c | wl-copy %i<cr>:echo expand('%"c') "is yanked to clipboard"<cr>
+
+  " yank root of current file's name into the clipboard
+  nnoremap yr :!echo -n %"c:r | wl-copy %i<cr>:echo expand('%"c:r') "is yanked to clipboard"<cr>
+endif
+
+if $XDG_SESSION_TYPE == 'x11'
+  " yank current directory path into the clipboard
+  nnoremap yd :!echo -n %d | xclip -selection clipboard %i<cr>:echo expand('%"d') "is yanked to clipboard"<cr>
+
+  " yank current file path into the clipboard
+  nnoremap yf :!echo -n %c:p | xclip -selection clipboard %i<cr>:echo expand('%"c:p') "is yanked to clipboard"<cr>
+
+  " yank current filename without path into the clipboard
+  nnoremap yn :!echo -n %c | xclip -selection clipboard %i<cr>:echo expand('%"c') "is yanked to clipboard"<cr>
+
+  " yank root of current file's name into the clipboard
+  nnoremap yr :!echo -n %c:r | xclip -selection clipboard %i<cr>:echo expand('%"c:r') "is yanked to clipboard"<cr>
+endif
+

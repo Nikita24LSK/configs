@@ -1,0 +1,102 @@
+" Set appearance
+
+source $VIFM/favicons.vifm
+colorscheme nord_custom
+
+" Set local specific options
+
+if filereadable($VIFM . "/local_opts.vifm")
+  source $VIFM/local_opts.vifm
+endif
+
+" Choose OS profile
+
+if has('win')
+  source $VIFM/profiles/windows.vifm
+else
+  set syscalls
+  let $username=system('whoami')
+  let &rulerformat = "(" . $username . ")" . '%=%l/%S [%L]'
+
+  filetype *.zip unzip -l %"f%m
+  filetype *.7z 7z l %"f%m
+  filetype *.rar unrar l %"f%m
+  filetype *.tar,*.tar.gz,*.tar.xz tar -tf %"f%m
+
+  command! dropcache sudo sync
+  command! sudo sudo vifm %"D %"d
+  command! tar tar -cf %a %"f
+  command! targz tar -czvf %a %"f
+  command! tarxz tar -cJf %a %"f
+  command! zip zip -r %a %"f
+  command! rar rar a %a %"f
+
+  nnoremap r! :sudo<cr>
+  nnoremap rc :dropcache<cr>
+  nnoremap rd :!df -h %m<cr>
+  nnoremap rf :!file %"f%m<cr>
+  nnoremap <c-e> :!extract %"D %"f<cr>
+
+  " Determine Termux
+  if $TERMUX_VERSION
+    source $VIFM/profiles/termux.vifm
+  else
+    source $VIFM/profiles/linux.vifm
+  endif
+endif
+
+set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
+set trashdir="$VIFM/Trash"
+set sortnumbers
+set undolevels=100
+set scrolloff=5
+set vicmd=nvim
+set ignorecase
+set smartcase
+set incsearch
+set wildmenu
+set trash
+set rnu
+set nu
+set vifminfo=
+set runexec
+
+fileviewer *.ini,*.java,*.toml,*.json,*.xml,*.html,*.lua,*.go,*.log,*.conf,*.py,*.c,*.cpp,*.rb,*.rs,*.md,*.h,*.css,*.js,*.asm,*.sh,*.ahk,*.ps1,*.bat bat --color always --wrap never --pager never %c -p --theme "Monokai Extended Bright"
+
+execute 'mark h' fnameescape($HOME)
+execute 'mark z' fnameescape($VIFM)
+
+command! diff nvim -d %"f %"F
+command! rc nvim $MYVIFMRC
+
+nnoremap ; :
+vnoremap ; :
+nnoremap . za
+nnoremap w :view<cr>
+nnoremap s :shell<cr>
+nnoremap S :sync<cr>
+nnoremap cc :copy<space>
+nnoremap cm :move<space>
+vnoremap cc :copy<cr>
+vnoremap cm :move<cr>
+nnoremap cd :mkdir<space>
+nnoremap ce :!nvim %"f<cr>
+nnoremap cf :touch<space>
+nnoremap ch :!r2 -nc 'V' %"c<cr>
+nnoremap cv :!nvim<space>
+nnoremap cC :clone<space>
+nnoremap rg :grep<space>
+nnoremap rs :find<space>
+nnoremap <c-d> :quit<cr>
+nnoremap <c-s> :sort<cr>
+nnoremap <space>t :tabnew<cr>
+nnoremap <space>j :tabprevious<cr>
+nnoremap <space>k :tabnext<cr>
+nnoremap <space>x :tabclose<cr>
+nnoremap <space>v :vsplit<cr>
+nnoremap <space>s :split<cr>
+nnoremap <space>o :only<cr>
+nnoremap J :cd %d %c<cr>
+nnoremap K :cd %d %d/..<cr>
+nnoremap X <C-w>x
+
