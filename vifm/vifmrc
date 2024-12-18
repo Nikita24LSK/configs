@@ -59,7 +59,13 @@ set trash
 set rnu
 set nu
 set vifminfo=
+set wildstyle=popup
 set runexec
+set vimhelp
+set nohlsearch
+set tabstop=2
+set dotdirs=
+set title
 
 fileviewer *.ini,*.java,*.toml,*.json,*.xml,*.html,*.lua,*.go,*.log,*.conf,*.py,*.c,*.cpp,*.rb,*.rs,*.md,*.h,*.css,*.js,*.asm,*.sh,*.ahk,*.ps1,*.bat bat --color always --wrap never --pager never %c -p --theme "Monokai Extended Bright"
 
@@ -67,24 +73,34 @@ execute 'mark h' fnameescape($HOME)
 execute 'mark z' fnameescape($VIFM)
 
 command! diff nvim -d %"f %"F
-command! rc nvim $MYVIFMRC
+command! rc :write | execute ':!%n${EDITOR:-vim} $MYVIFMRC' | :restart
 
 nnoremap ; :
 vnoremap ; :
 nnoremap . za
+nnoremap > <c-w>>
+nnoremap < <c-w><
+nnoremap + <c-w>+
+nnoremap - <c-w>-
+nnoremap | <c-w>|
+nnoremap \ <c-w>=
+nnoremap X <C-w>x
 nnoremap w :view<cr>
 nnoremap s :shell<cr>
 nnoremap S :sync<cr>
 nnoremap cc :copy<space>
+nnoremap cC :copy!<space>
 nnoremap cm :move<space>
+nnoremap cM :move!<space>
 vnoremap cc :copy<cr>
+vnoremap cC :copy!<cr>
 vnoremap cm :move<cr>
+vnoremap cM :move!<cr>
 nnoremap cd :mkdir<space>
-nnoremap ce :!nvim %"f<cr>
 nnoremap cf :touch<space>
-nnoremap ch :!r2 -nc 'V' %"c<cr>
-nnoremap cv :!nvim<space>
-nnoremap cC :clone<space>
+nnoremap rh :!radare2 -nc 'V' %"c<cr>
+nnoremap cn :!nvim<space>
+nnoremap C :clone<space>
 nnoremap rg :grep<space>
 nnoremap rs :find<space>
 nnoremap <c-d> :quit<cr>
@@ -98,5 +114,12 @@ nnoremap <space>s :split<cr>
 nnoremap <space>o :only<cr>
 nnoremap J :cd %d %c<cr>
 nnoremap K :cd %d %d/..<cr>
-nnoremap X <C-w>x
+nnoremap <c-j> <space>j<space>
+nnoremap <c-k> <space>k<space>
+nnoremap <a-j> ]R
+nnoremap <a-k> [R
+nnoremap A cw
+nnoremap i cW<c-u>
+nnoremap I cw<c-a>
+nnoremap E :!nvim %"f<cr>
 

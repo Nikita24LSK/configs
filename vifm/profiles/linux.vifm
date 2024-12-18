@@ -25,7 +25,7 @@ mark m /run/media/
 mark o /opt/
 mark r /
 
-nnoremap cE :!imhex %"f%i&<cr>
+nnoremap rH :!imhex %"f%i&<cr>
 
 if $XDG_SESSION_TYPE == 'wayland'
   " yank current directory path into the clipboard

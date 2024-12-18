@@ -21,6 +21,7 @@ execute 'mark d' fnameescape($HOME) . '\\Desktop'
 mark r C:\\
 mark p 'C:\\Program Files\\'
 
+nnoremap rH :!imhex %"f%i&<cr>
 nnoremap cs :volumes<cr>
 nnoremap <c-e> :!winrar x %"f %"D<cr>
 nnoremap <c-p> :!winrar a -ep1 -scul -r0 -iext -imon1 -- . %"f<cr>

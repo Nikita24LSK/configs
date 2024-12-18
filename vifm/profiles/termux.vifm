@@ -1,9 +1,12 @@
 :split
 
+set shell="/data/data/com.termux/files/usr/bin/zsh"
+
 filetype *.mp3,*.wav,*.avi,*.mp4,*.ppt,*.pptx,*.xls,*.xlsx,*.doc,*.docx,*.pdf,*.jpg,*.png,*.bmp,*.html,*.htm,*.ts termux-open %"f%i&
 
 mark S /storage/emulated/0
 mark s ~/.shortcuts
+mark d /storage/emulated/0/Download
 mark e /data/data/com.termux/files/usr/etc
 mark r /data/data/com.termux/files
 mark u /data/data/com.termux/files/usr
