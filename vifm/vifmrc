@@ -73,7 +73,7 @@ execute 'mark h' fnameescape($HOME)
 execute 'mark z' fnameescape($VIFM)
 
 command! diff nvim -d %"f %"F
-command! rc :write | execute ':!%n${EDITOR:-vim} $MYVIFMRC' | :restart
+command! rc :write | execute ':!%n${EDITOR:-nvim} $MYVIFMRC' | :restart
 
 nnoremap ; :
 vnoremap ; :
