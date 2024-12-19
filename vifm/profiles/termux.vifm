@@ -1,5 +1,6 @@
 :split
 
+let $py_interpreter="python"
 set shell="/data/data/com.termux/files/usr/bin/zsh"
 
 filetype *.mp3,*.wav,*.avi,*.mp4,*.ppt,*.pptx,*.xls,*.xlsx,*.doc,*.docx,*.pdf,*.jpg,*.png,*.bmp,*.html,*.htm,*.ts termux-open %"f%i&

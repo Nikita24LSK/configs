@@ -1,3 +1,5 @@
+let $py_interpreter="python"
+
 filextype *.apmx64 apimonitor-x64 %"f%i&
 filextype *.apmx32 apimonitor-x32 %"f%i&
 filextype *.i64 ida64 %"f%i&
@@ -28,13 +30,13 @@ nnoremap <c-p> :!winrar a -ep1 -scul -r0 -iext -imon1 -- . %"f<cr>
 vnoremap <c-p> :!winrar a -ep1 -scul -r0 -iext -imon1 -- . %"f<cr>
 
 "  yank current directory path into the clipboard
-nnoremap yd :!powershell -command "Set-Clipboard -Value '%"d'"<cr>:echo expand('%"d') "is yanked to clipboard"<cr>
+nnoremap yd :!powershell -command "Set-Clipboard -Value '%"d:gs!/!\\!'"<cr>:echo expand('%"d:gs!/!\\!') "is yanked to clipboard"<cr>
 
 " yank current file path into the clipboard
-nnoremap yf :!powershell -command "Set-Clipboard -Value '%"c:p'"<cr>:echo expand('%"c:p') "is yanked to clipboard"<cr>
+nnoremap yf :!powershell -command "Set-Clipboard -Value '%"c:p:gs!/!\\!'"<cr>:echo expand('%"c:p:gs!/!\\!') "is yanked to clipboard"<cr>
 
 " yank current filename without path into the clipboard
-nnoremap yn :!powershell -command "Set-Clipboard -Value '%"c'"<cr>:echo expand('%"c') "is yanked to clipboard"<cr>
+nnoremap yn :!powershell -command "Set-Clipboard -Value '%"c:gs!/!\\!'"<cr>:echo expand('%"c:gs!/!\\!') "is yanked to clipboard"<cr>
 
 " yank root of current file's name into the clipboard
-nnoremap yr :!powershell -command "Set-Clipboard -Value '%"c:r'"<cr>:echo expand('%"c:r') "is yanked to clipboard"<cr>
+nnoremap yr :!powershell -command "Set-Clipboard -Value '%"c:r:gs!/!\\!'"<cr>:echo expand('%"c:r:gs!/!\\!') "is yanked to clipboard"<cr>
