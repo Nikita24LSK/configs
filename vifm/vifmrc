@@ -74,8 +74,8 @@ execute 'mark z' fnameescape($VIFM)
 
 command! diff nvim -d %"f %"F
 command! rc :write | execute ':!nvim '.$MYVIFMRC | :restart
-command! runargs :!%"c:p %a
-command! py :execute ':!!'.$py_interpreter.' %"c'
+command! runargs :!!%"c:p %a
+command! pyrun :execute ':!!'.$py_interpreter.' %"c %a'
 
 nnoremap ; :
 vnoremap ; :
@@ -106,6 +106,7 @@ nnoremap C :clone<space>
 nnoremap rg :grep<space>
 nnoremap rs :find<space>
 nnoremap rr :runargs<space>
+nnoremap rp :pyrun<space>
 nnoremap <c-d> :quit<cr>
 nnoremap <c-s> :sort<cr>
 nnoremap <space>t :tabnew<cr>
