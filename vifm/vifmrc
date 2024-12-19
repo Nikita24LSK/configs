@@ -23,6 +23,8 @@ else
   filetype *.rar unrar l %"f%m
   filetype *.tar,*.tar.gz,*.tar.xz tar -tf %"f%m
 
+  fileviewer .*/,*/ tree -C %"c
+
   command! dropcache sudo sync
   command! sudo sudo vifm %"D %"d
   command! tar tar -cf %a %"f
