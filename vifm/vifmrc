@@ -114,12 +114,12 @@ nnoremap <space>x :tabclose<cr>
 nnoremap <space>v :vsplit<cr>
 nnoremap <space>s :split<cr>
 nnoremap <space>o :only<cr>
+nnoremap L ]R
+nnoremap H [R
 nnoremap J :cd %d %c<cr>
 nnoremap K :cd %d %d/..<cr>
 nnoremap <c-j> <space>j<space>
 nnoremap <c-k> <space>k<space>
-nnoremap <a-j> ]R
-nnoremap <a-k> [R
 nnoremap A cw
 nnoremap i cW<c-u>
 nnoremap I cw<c-a>
