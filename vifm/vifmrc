@@ -110,7 +110,6 @@ nnoremap rs :find<space>
 nnoremap rr :runargs<space>
 nnoremap rp :pyrun<space>
 nnoremap <c-d> :quit<cr>
-nnoremap <c-s> :sort<cr>
 nnoremap <space>t :tabnew<cr>
 nnoremap <space>j :tabprevious<cr>
 nnoremap <space>k :tabnext<cr>
@@ -118,6 +117,7 @@ nnoremap <space>x :tabclose<cr>
 nnoremap <space>v :vsplit<cr>
 nnoremap <space>s :split<cr>
 nnoremap <space>o :only<cr>
+nnoremap Q :sort<cr>
 nnoremap L ]R
 nnoremap H [R
 nnoremap J :cd %d %c<cr>
