@@ -33,6 +33,8 @@ else
   command! zip zip -r %a %"f
   command! rar rar a %a %"f
 
+  mark c ~/.config
+
   nnoremap r! :sudo<cr>
   nnoremap rc :dropcache<cr>
   nnoremap rd :!df -h %m<cr>
