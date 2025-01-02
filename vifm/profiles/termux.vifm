@@ -1,16 +1,24 @@
 :split
 
 let $py_interpreter="python"
+let $uid=system('echo $UID')
 set shell="/data/data/com.termux/files/usr/bin/zsh"
 
 filetype *.mp3,*.wav,*.avi,*.mp4,*.ppt,*.pptx,*.xls,*.xlsx,*.doc,*.docx,*.pdf,*.jpg,*.png,*.bmp,*.html,*.htm,*.ts termux-open %"f%i&
 
 mark S /storage/emulated/0
-mark s ~/.shortcuts
 mark d /storage/emulated/0/Download
-mark e /data/data/com.termux/files/usr/etc
-mark r /data/data/com.termux/files
-mark u /data/data/com.termux/files/usr
+
+if $uid == '0'
+  mark e /system/etc
+  mark m /mnt/media_rw
+  mark r /
+else
+  mark e /data/data/com.termux/files/usr/etc
+  mark r /data/data/com.termux/files
+  mark s ~/.shortcuts
+  mark u /data/data/com.termux/files/usr
+endif
 
 " yank current directory path into the clipboard
 nnoremap yd :!echo -n %d | termux-clipboard-set %i<cr>:echo expand('%"d') "is yanked to clipboard"<cr>
