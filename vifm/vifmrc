@@ -80,6 +80,11 @@ command! diff nvim -d %"f %"F
 command! rc :write | execute ':!nvim '.$MYVIFMRC | :restart
 command! runargs :!!%"c:p %a
 command! pyrun :execute ':!!'.$py_interpreter.' %"c %a'
+command! FZFfind : set noquickview
+         \| let $FZF_PICK = term('fzf --height 15')
+         \| if $FZF_PICK != ''
+         \|     execute 'goto' fnameescape($FZF_PICK)
+         \| endif
 
 nnoremap ; :
 vnoremap ; :
@@ -108,7 +113,7 @@ nnoremap rh :!radare2 -nc 'V' %"c<cr>
 nnoremap cn :!nvim<space>
 nnoremap C :clone<space>
 nnoremap rg :grep<space>
-nnoremap rs :find<space>
+nnoremap rs :FZFfind<cr>
 nnoremap rr :runargs<space>
 nnoremap rp :pyrun<space>
 nnoremap <c-d> :quit<cr>
