@@ -12,7 +12,7 @@ filextype *.burp burpsuite %"f%i&
 filextype *.mkv,*.mp3,*.wav,*.avi,*.mp4 vlc %"f%i&
 filextype *.htm,*.html firefox %"c:p &
 
-if $KITTY_PID
+if $KITTY_PID != ''
   fileviewer <image/*>
       \ kitten icat --silent --transfer-mode=file --place=%pwx%ph@%pxx%py %c >/dev/tty </dev/tty %N
       \ %pc

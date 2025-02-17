@@ -42,7 +42,7 @@ else
   nnoremap <c-e> :!extract %"D %"f<cr>
 
   " Determine Termux
-  if $TERMUX_VERSION
+  if $TERMUX_VERSION != ''
     source $VIFM/profiles/termux.vifm
   else
     source $VIFM/profiles/linux.vifm
