@@ -17,7 +17,7 @@ results=($(
     --delimiter ':' \
     --bind "$start_state" \
     --bind "change:reload:[[ {q} == '' ]] || rg --color=always --smart-case --hidden --files ${2} | rg {q} || true" \
-    --bind "E:execute:${VIM} {1}"
+    --bind "E:execute:${VIM} {1}" | sed 's/\$/\\$/g'
 ))
 
 vim_command="${VIM}"
