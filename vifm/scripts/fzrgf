@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# For debugging
+# set -x
+
+VIM="nvim"
+
+if [[ "${1}" == "" ]]; then
+  start_state='start:reload:echo ""'
+else
+  start_state="start:reload:rg --smart-case --hidden --colors path:none --colors path:style:nobold --files | rg --colors path:none --colors path:style:nobold '${1}'"
+fi
+
+fzf --disabled --color=bw \
+  --query "${1}" \
+  --delimiter ':' \
+  --bind "$start_state" \
+  --bind "change:reload:[[ {q} == '' ]] || rg --smart-case --hidden --colors path:none --colors path:style:nobold --files | rg --colors path:none --colors path:style:nobold {q} || true" \
+  --bind "E:execute:${VIM} {1}"
+

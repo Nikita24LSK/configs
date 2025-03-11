@@ -13,10 +13,17 @@ endif
 
 if has('win')
   source $VIFM/profiles/windows.vifm
+  command! FZFfind : set noquickview
+           \| let $FZF_PICK = term('fzf --color=bw --height 15')
+           \| if $FZF_PICK != ''
+           \|     execute 'goto' fnameescape($FZF_PICK)
+           \| endif
+
+  nnoremap rs :FZFfind<cr>
 else
   set syscalls
   let $username=system('whoami')
-  let &rulerformat = "(" . $username . ")" . '%=%l/%S [%L]'
+  let &rulerformat = "[" . $username . "]" . '%=%l/%S [%L]'
 
   filetype *.zip unzip -l %"f%m
   filetype *.7z 7z l %"f%m
@@ -32,6 +39,11 @@ else
   command! tarxz tar -cJf %a %"f
   command! zip zip -r %a %"f
   command! rar rar a %a %"f
+  command! FZRgf : set noquickview
+           \| let $FZRGF_PICK = term('fzrgf %a')
+           \| if $FZRGF_PICK != ''
+           \|     execute 'goto' fnameescape($FZRGF_PICK)
+           \| endif
 
   mark c ~/.config
 
@@ -40,6 +52,9 @@ else
   nnoremap rd :!df -h %m<cr>
   nnoremap rf :!file %"f%m<cr>
   nnoremap <c-e> :!extract %"D %"f<cr>
+  nnoremap rg :!fzrg<space>
+  nnoremap rs :FZRgf<space>
+  nnoremap rS :!fzfind<space>
 
   " Determine Termux
   if $TERMUX_VERSION != ''
@@ -80,11 +95,6 @@ command! diff nvim -d %"f %"F
 command! rc :write | execute ':!nvim '.$MYVIFMRC | :restart
 command! runargs :!!%"c:p %a
 command! pyrun :execute ':!!'.$py_interpreter.' %"c %a'
-command! FZFfind : set noquickview
-         \| let $FZF_PICK = term('fzf --height 15')
-         \| if $FZF_PICK != ''
-         \|     execute 'goto' fnameescape($FZF_PICK)
-         \| endif
 
 nnoremap ; :
 vnoremap ; :
@@ -112,8 +122,6 @@ nnoremap cf :touch<space>
 nnoremap rh :!radare2 -nc 'V' %"c<cr>
 nnoremap cn :!nvim<space>
 nnoremap C :clone<space>
-nnoremap rg :grep<space>
-nnoremap rs :FZFfind<cr>
 nnoremap rr :runargs<space>
 nnoremap rp :pyrun<space>
 nnoremap <c-d> :quit<cr>
@@ -134,5 +142,6 @@ nnoremap <c-k> <space>k<space>
 nnoremap A cw
 nnoremap i cW<c-u>
 nnoremap I cw<c-a>
+vnoremap E :!nvim %"f<cr>
 nnoremap E :!nvim %"f<cr>
 
