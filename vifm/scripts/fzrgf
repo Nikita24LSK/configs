@@ -16,5 +16,5 @@ fzf --disabled --color=bw \
   --delimiter ':' \
   --bind "$start_state" \
   --bind "change:reload:[[ {q} == '' ]] || rg --smart-case --hidden --colors path:none --colors path:style:nobold --files | rg --colors path:none --colors path:style:nobold {q} || true" \
-  --bind "E:execute:${VIM} {1}"
+  --bind "ctrl-e:execute:${VIM} {1}"
 

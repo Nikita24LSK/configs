@@ -17,7 +17,7 @@ results=($(
     --delimiter ':' \
     --bind "$start_state" \
     --bind 'change:reload:[[ {q} == "" ]] || rg --column --color=always --smart-case {q} || true' \
-    --bind "E:execute:${VIM} {1} +{2}" \
+    --bind "ctrl-e:execute:${VIM} {1} +{2}" \
     --preview '[[ {1} == ""  ]] || bat --style=numbers --color=always --highlight-line {2} {1}' \
     --preview-window '+{2}-5,<80(up)' | awk -F: '{print $1":"$2}'
 ))
