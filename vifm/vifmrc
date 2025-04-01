@@ -39,7 +39,7 @@ else
   command! tarxz tar -cJf %a %"f
   command! zip zip -r %a %"f
   command! rar rar a %a %"f
-  command! FZRgf : set noquickview
+  command! fzrgf : set noquickview
            \| let $FZRGF_PICK = term('fzrgf %a')
            \| if $FZRGF_PICK != ''
            \|     execute 'goto' fnameescape($FZRGF_PICK)
@@ -47,14 +47,14 @@ else
 
   mark c ~/.config
 
+  nnoremap <a-j> :fzrgf<space>
+  nnoremap <c-e> :!extract %"D %"f<cr>
   nnoremap r! :sudo<cr>
   nnoremap rc :dropcache<cr>
   nnoremap rd :!df -h %m<cr>
   nnoremap rf :!file %"f%m<cr>
-  nnoremap <c-e> :!extract %"D %"f<cr>
   nnoremap rg :!fzrg<space>
-  nnoremap rs :FZRgf<space>
-  nnoremap rS :!fzfind<space>
+  nnoremap rs :!fzfind<space>
 
   " Determine Termux
   if $TERMUX_VERSION != ''
@@ -86,7 +86,7 @@ set tabstop=2
 set dotdirs=
 set title
 
-fileviewer *.ini,*.java,*.toml,*.json,*.xml,*.html,*.lua,*.go,*.log,*.conf,*.py,*.c,*.cpp,*.rb,*.rs,*.md,*.h,*.css,*.js,*.asm,*.sh,*.ahk,*.ps1,*.bat bat --color always --wrap never --pager never %c -p --theme "Monokai Extended Bright"
+fileviewer *.ini,*.java,*.toml,*.json,*.xml,*.html,*.lua,*.go,*.log,*.conf,*.py,*.c,*.cpp,*.rb,*.rs,*.md,*.h,*.css,*.js,*.asm,*.sh,*.ahk,*.ps1,*.bat bat --color always --style=numbers --wrap never --pager never %c --theme "Monokai Extended Bright"
 
 execute 'mark h' fnameescape($HOME)
 execute 'mark z' fnameescape($VIFM)

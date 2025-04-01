@@ -1,53 +1,58 @@
--- local autocmd = vim.api.nvim_create_autocmd
+vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
+vim.g.mapleader = " "
 
--- Auto resize panes when resizing nvim window
--- autocmd("VimResized", {
---   pattern = "*",
---   command = "tabdo wincmd =",
--- })
+-- bootstrap lazy and all plugins
+local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
-vim.opt.clipboard = 'unnamedplus'
-vim.opt.relativenumber = true
-vim.opt.scrolloff = 5
-vim.opt.tw = 79
-vim.opt.colorcolumn = "-6,+1"
-vim.opt.tabstop = 2
-vim.opt.softtabstop = 2
-vim.opt.shiftwidth = 2
-
-for i = 1, 9, 1 do
-  vim.keymap.set("n", string.format("<A-%s>", i), function()
-    vim.api.nvim_set_current_buf(vim.t.bufs[i])
-  end)
+if not vim.uv.fs_stat(lazypath) then
+  local repo = "https://github.com/folke/lazy.nvim.git"
+  vim.fn.system { "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath }
 end
 
-vim.api.nvim_create_user_command(
-  'DevWork',
-  function()
-    vim.api.nvim_command('tabnew')
-    vim.api.nvim_command('terminal')
+vim.opt.rtp:prepend(lazypath)
 
-    local platform_term_id = vim.api.nvim_exec(':echo b:terminal_job_id', true)
+local lazy_config = require "configs.lazy"
 
-    vim.api.nvim_command(':call chansend('.. platform_term_id ..', "cd ~/work/android-platform-frida/\ntail -F ./logs/platform.log\n")')
+-- load plugins
+require("lazy").setup({
+  {
+    "NvChad/NvChad",
+    lazy = false,
+    branch = "v2.5",
+    import = "nvchad.plugins",
+  },
 
-    vim.cmd('norm G')
+  { import = "plugins" },
+}, lazy_config)
 
-    vim.api.nvim_command('vsplit')
-    vim.api.nvim_command('terminal')
+-- load theme
+dofile(vim.g.base46_cache .. "defaults")
+dofile(vim.g.base46_cache .. "statusline")
 
-    local scenarios_term_id = vim.api.nvim_exec(':echo b:terminal_job_id', true)
+require "options"
+require "nvchad.autocmds"
 
-    vim.api.nvim_command(':call chansend('.. scenarios_term_id ..', "cd ~/work/android-platform-frida/\ntail -F ./logs/scenarios.log\n")')
-    vim.cmd('norm G')
+vim.schedule(function()
+  require "mappings"
+end)
 
-    vim.api.nvim_command('split')
-    vim.api.nvim_command('terminal')
+vim.notify = require("notify")
+vim.opt.termguicolors = true
 
-    local python_term_id = vim.api.nvim_exec(':echo b:terminal_job_id', true)
-
-    vim.api.nvim_command(':call chansend('.. python_term_id ..', "cd ~/work/android-platform-frida/\n")')
-    vim.api.nvim_command('wincmd J')
+vim.api.nvim_create_autocmd("TermOpen", {
+  callback = function()
+    vim.opt.number = false
+    vim.opt.relativenumber = false
   end,
-  {}
-)
+})
+
+vim.api.nvim_create_augroup("python_indent", {clear = true})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "python",
+  callback = function()
+    vim.opt_local.expandtab = true
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.softtabstop = 2
+  end,
+})
