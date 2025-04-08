@@ -1,0 +1,129 @@
+#!/bin/env bash
+
+# For debugging
+# set -x
+
+VIM="nvim"
+
+
+if [[ "${1}" == "h" ]] || [[ "${1}" == "-h" ]] || [[ "${1}" == "help" ]] || [[ "${1}" == "--help" ]]; then
+  echo -e "Usage: ${0} [query] [mode] [start_directory]\n\n" \
+          "Params:\n" \
+          "  query - start fzf with specific query\n" \
+          "  mode - searching mode 'f': files (default mode) or 's': strings\n" \
+          "  start_directory - starting point for searching\n\n" \
+          "Hotkeys:\n" \
+          "  Ctrl-f - switch to the files searching\n" \
+          "  Ctrl-s - switch to the strings searching\n" \
+          "  Ctrl-x - lock results and searching through fzf\n" \
+          "  Ctrl-e - open highlighted result in Vim without fzrg closing\n" \
+          "  Tab - select line\n\n\n"
+  exit
+fi
+
+
+START_QUERY=${1}
+START_MODE=$( [[ "${2}" != 'f' ]] && [[ "${2}" != 's' ]] && echo "f" || echo ${2} )
+START_LABEL=$( [[ "${START_MODE}" == "f" ]] && echo "Files" || echo "Strings" )
+START_DIR=${3}
+
+MODE_FILE=$(mktemp)
+FILES_RG="rg --color=always --smart-case --hidden --files"
+STRINGS_RG="rg --json --column --color=always --smart-case"
+PREVIEW="bat --style=numbers --color=always"
+
+STRINGS_FILTER='. | select(.type=="match") | .data | "\u001b[35m\(.path.text)\u001b[0m]:[\u001b[32m\(.line_number)\u001b[0m]:[\(.lines.text)"'
+FILES_FILTER='. | select(.type=="match") | .data | "\(.lines.text)"'
+
+if [[ "${START_MODE}" == "f" ]]; then
+  START_STATE="start:reload:${FILES_RG} ${START_DIR} | rg --json --smart-case '${START_QUERY}' | jq -r '${FILES_FILTER}' | sed '/^$/d'"
+else
+  START_STATE="start:reload:${STRINGS_RG} ${START_QUERY} ${START_DIR} | jq -r '${STRINGS_FILTER}' | sed '/^$/d'"
+fi
+
+START_STATE=$( [[ "${START_QUERY}" == "" ]] && echo 'start:reload:echo ""' || echo "${START_STATE}" )
+echo "${START_MODE}" > ${MODE_FILE}
+
+OLD_IFS=${IFS}
+IFS=$'\n'
+
+vim_command="${VIM}"
+results=($(
+  fzf -m \
+    --keep-right \
+    --disabled \
+    --ansi \
+    --query "${1}" \
+    --delimiter ']:[' \
+    --style full \
+    --list-label "${START_LABEL}" \
+    --input-label "ripgrep" \
+    --bind "${START_STATE}" \
+    --bind "ctrl-f:unbind(ctrl-f)+change-input-label(ripgrep)+disable-search+change-list-label(Files)+reload([[ {q} == '' ]] || ${FILES_RG} ${START_DIR} | rg --smart-case --json {q} | jq -r '${FILES_FILTER}' | sed '/^$/d')+execute(echo 'f' > ${MODE_FILE})+rebind(change,ctrl-s,ctrl-x)" \
+    --bind "ctrl-s:unbind(ctrl-s)+change-input-label(ripgrep)+disable-search+change-list-label(Strings)+reload([[ {q} == '' ]] || ${STRINGS_RG} {q} ${START_DIR} | jq -r '${STRINGS_FILTER}' | sed '/^$/d')+execute(echo 's' > ${MODE_FILE})+rebind(change,ctrl-f,ctrl-x)" \
+    --bind "ctrl-x:unbind(change,ctrl-x)+change-input-label(fzf)+clear-query+enable-search+rebind(ctrl-f,ctrl-s)" \
+    --bind "change:reload(
+      if [[ {q} != '' ]]; then 
+        if [[ \$(cat ${MODE_FILE}) == 's' ]]; then
+          ${STRINGS_RG} {q} ${START_DIR} | jq -r '${STRINGS_FILTER}' | sed '/^$/d' || true
+        elif [[ \$(cat ${MODE_FILE}) == 'f' ]]; then
+          ${FILES_RG} ${START_DIR} | rg --smart-case --json {q} | jq -r '${FILES_FILTER}' | sed '/^$/d' || true
+        else
+          true
+        fi
+      else
+        true
+      fi
+      )" \
+    --bind "ctrl-e:execute(
+        if [[ {1} != '' ]]; then
+          if [[ \$(cat ${MODE_FILE}) == 's' ]]; then
+            ${VIM} {1} +{2}
+          elif [[ \$(cat ${MODE_FILE}) == 'f' ]]; then
+            ${VIM} {1}
+          else
+            true
+          fi
+        else
+          true
+        fi
+      )" \
+    --preview "
+      if [[ {1} != '' ]];then
+        if [[ \$(cat ${MODE_FILE}) == 'f' ]]; then
+          ${PREVIEW} {} || true
+        elif [[ \$(cat ${MODE_FILE}) == 's' ]]; then
+          ${PREVIEW} --highlight-line {2} {1} || true
+        else
+          true
+        fi
+      else
+        true
+      fi
+    " \
+    --preview-window '+{2}-5,wrap,<80(up)' | sed 's/\$/\\$/g'
+))
+
+for ((i=0;i<${#results[@]};i++)); do
+  if [[ "$(cat ${MODE_FILE})" == "f" ]]; then
+    vim_command="${vim_command} ${results[${i}]}"
+  elif [[ "$(cat ${MODE_FILE})" == "s" ]]; then
+    filepath=$(eval "echo '${results[${i}]}'" | awk -F"\\\]:\\\[" '{print $1}')
+    fileline=$(eval "echo '${results[${i}]}'" | awk -F"\\\]:\\\[" '{print $2}')
+
+    next_file_arg="+\"e +${fileline} ${filepath}\""
+    vim_command="${vim_command} ${next_file_arg}"
+  fi
+done
+
+if [[ "${vim_command}" != "${VIM}" ]]; then
+  if [[ $(cat ${MODE_FILE}) == 's' ]]; then
+    vim_command="${vim_command} +\"bnext\""
+  fi
+
+  eval "${vim_command}"
+fi
+
+IFS=${OLD_IFS}
+rm ${MODE_FILE}
+
