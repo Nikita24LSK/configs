@@ -1,0 +1,20 @@
+#!/bin/env bash
+
+base_command="flameshot gui"
+delay=3000
+
+function get_win_geometry() {
+  eval `xdotool getactivewindow getwindowgeometry --shell`
+  echo "${WIDTH}x${HEIGHT}+${X}+${Y}"
+}
+
+function get_screen_geometry() {
+  display_name=$(bspc query -M -m .focused --names)
+  geometry=$(xrandr | grep -E "^${display_name}" | grep -Eo "[0-9]+x[0-9]+")
+  echo ${geometry}
+}
+
+[[ "$2" == "delay" ]] && delay_param="--delay ${delay}"
+[[ "$1" == "screen" ]] && ${base_command} ${delay_param} --region $(get_screen_geometry)
+[[ "$1" == "window" ]] && ${base_command} ${delay_param} --region $(get_win_geometry)
+

@@ -1,0 +1,9 @@
+new_tab
+launch zsh
+
+new_tab
+launch ipython
+
+new_tab
+launch nvim
+

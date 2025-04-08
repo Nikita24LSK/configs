@@ -1,36 +1,42 @@
 #!/bin/bash
 
+wmname LG3D &
+dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XAUTHORITY
+
+$HOME/.config/polybar/start_polybar
+
+#ВОРКСПЕЙСЫ
+for mon in $(xrandr --query | grep " connected" | awk '{print $1}'); do
+  bspc monitor ${mon} -d 1 2 3 4 5 6 7 8 9
+done
+
 #АВТОСТАРТ
 sxhkd &
 numlockx &
+unclutter --timeout 3 -b
+flameshot &
 xsetroot -cursor_name left_ptr
 picom -b
 $HOME/.fehbg
-$HOME/.config/eww/bar_horizontal/scripts/weather get &
-$HOME/.config/eww/bar_horizontal/scripts/metrics subscribe &
-$HOME/.config/eww/bar_horizontal/scripts/task_manager monitor
-eww -c ~/.config/eww/bar_horizontal open bar
 copyq &
 lxqt-policykit-agent &
 nm-applet &
 blueman-applet &
-udiskie -f vifmlaunch --tray &
-
-#ВОРКСПЕЙСЫ
-bspc monitor -d 1 2 3 4 5
+udiskie -f "kitty -e vifm" --tray &
 
 bspc config pointer_motion_interval 5
 
 #РАМКИ И ГАПСЫ
-bspc config border_width         0
-bspc config window_gap          10
+bspc config border_width         1
+bspc config window_gap          0
 
-bspc config normal_border_color "#23252e"
-bspc config active_border_color "#23252e"
-bspc config focused_border_color "#f9f8fe"
-
+bspc config normal_border_color "#2e3440"
+bspc config active_border_color "#2e3440"
+bspc config focused_border_color "#c7cadb"
+#
 #ЦВЕТ ПРОСТРАНСТВА ПРИ ВЫБОРЕ ПОЛОЖЕНИЯ НОВОГО ОКНА
-bspc config presel_feedback_color "#0050AA"
+bspc config presel_feedback_color "#1d2228"
+
 
 #КОФИЦИЕНТ РАЗДЕЛЕНИЯ, СКОЛЬКО ПРОЦЕНТОВ ОСТАНЕТСЯ ОТ РОДИТЕЛЬСКОГО ОКНА ПРИ ОТКРЫТИИ НОВОГО
 bspc config split_ratio          0.5
@@ -40,9 +46,10 @@ bspc config focus_follows_pointer true
 bspc config pointer_modifier	super
 
 #РЕЖИМ МОНОКЛЯ КОГДА ОТКРЫТО ОДНО ОКНО
-bspc config single_monocle true
+# bspc config single_monocle true
 
 #ОТКЛЮЧЕНИЕ ГАПСОВ РАМОК И ОТСТУПОВ КОГДА ОТКРЫТО ОДНО ОКНО
+bspc config single_monocle	     true
 bspc config borderless_monocle   false
 bspc config gapless_monocle      false
 bspc config paddingless_monocle	 true
@@ -53,26 +60,25 @@ bspc config paddingless_monocle	 true
 
 #ПРАВИЛА ОКОН
 bspc rule -a firefox rectangle=1200x771+355+181
-bspc rule -a tabbed rectangle=828x451+533+324
+bspc rule -a tabbed rectangle=848x451+533+324
 bspc rule -a win_translate state=floating
-bspc rule -a Hubstaff state=floating
+bspc rule -a Netsoft-com.netsoft.hubstaff state=floating rectangle=920x580+335+169
 bspc rule -a vlc state=floating
+bspc rule -a Virt-manager state=floating rectangle=608x388+990+477
+bspc rule -a float_kitty state=floating
 bspc rule -a float_alacritty state=floating
 bspc rule -a zoom state=floating
 bspc rule -a Nm-connection-editor state=floating
 bspc rule -a discord state=floating
-bspc rule -a TelegramDesktop state=floating
+# bspc rule -a TelegramDesktop state=floating
 bspc rule -a transmission-gtk state=floating
 bspc rule -a copyq state=floating
-bspc rule -a Pavucontrol state=floating
+bspc rule -a pavucontrol state=floating
 bspc rule -a Blueman-manager state=floating
 bspc rule -a Lxappearance state=floating
 bspc rule -a Lxappearance rectangle=870x477+317+272
 bspc rule -a appium-inspector state=floating
 bspc rule -a Vncviewer state=floating
-bspc rule -a "VirtualBox Manager" state=floating
-bspc rule -a VirtualBox state=floating
-bspc rule -a Hubstaff state=floating
 bspc config external_rules_command /home/nikita/.config/bspwm/external_rules
 
 sleep 0.5

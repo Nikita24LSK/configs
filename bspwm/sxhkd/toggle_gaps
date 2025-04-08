@@ -1,0 +1,19 @@
+#!/bin/env bash
+
+picom_conf_file=$HOME/.config/picom/picom.conf
+dunst_conf_file=$HOME/.config/dunst/dunstrc
+bspwm_conf_file=$HOME/.config/bspwm/bspwmrc
+radius=$(grep "corner-radius = " ${picom_conf_file} | awk '{print $3}')
+
+if [[ "${radius}" == "10" ]]; then
+  radius=0
+else
+  radius=10
+fi
+
+sed -Ei "s/(corner-radius = )[0-9]+/\1${radius}/g" ${picom_conf_file}
+sed -Ei "s/(corner_radius = )[0-9]+/\1${radius}/g" ${dunst_conf_file}
+sed -Ei "s/(bspc config window_gap[ \t]*)[0-9]+/\1${radius}/g" ${bspwm_conf_file}
+killall dunst
+bspc config window_gap ${radius}
+
