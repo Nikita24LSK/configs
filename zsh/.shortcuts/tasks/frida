@@ -1,0 +1,14 @@
+#!/bin/env bash
+
+FRIDA_PATH="/data/data/com.termux/files/home/frida"
+
+
+if [ "$(su -c ps -A | grep frida-server)" == "" ]; then
+  # termux-wake-lock
+  su -c $FRIDA_PATH/frida-server -l 127.0.0.1 -D
+  termux-toast -b black -g top "Frida was started"
+else
+  su -c killall frida-server
+  termux-toast -b black -g top "Frida was stopped"
+fi
+

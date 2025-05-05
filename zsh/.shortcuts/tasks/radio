@@ -1,0 +1,118 @@
+#!/bin/env bash
+
+# Uncomment to debug
+# set -x
+
+# Change this var
+TRACKS_FILE="/storage/emulated/0/Documents/notes/Audiolikes.md"
+INDEX_FILE=$HOME/.mpd/radio_index
+PLAYLIST_FILE=$HOME/.mpd/playlists/radio.m3u
+
+is_mpd_present=$(ps -A | grep mpd)
+
+function select_in_menu() {
+  choice=$(termux-dialog radio -v "$1")
+  code=$(echo $choice | jq '.code')
+  index=$(echo $choice | jq '.index')
+
+  if [[ "$code" == "-2" ]] || [[ "$index" == "null" ]]; then
+    echo ""
+  else
+    echo $((index+1))
+  fi
+}
+
+function input_text() {
+  res=$(termux-dialog text -i $1)
+  code=$(echo $res | jq '.code' | egrep -o '[^"]+')
+  text=$(echo $res | jq '.text' | egrep -o '[^"]+')
+
+  if [[ "$code" == "-2" ]] || [[ "$text" == "null" ]]; then
+    echo ""
+  else
+    echo $text
+  fi
+}
+
+function play_station() {
+  stations="$(cat $INDEX_FILE | grep -Ev '^$' | tr '\n' ,)"
+
+  station=$(select_in_menu $stations)
+
+  if [ "$station" != "" ]; then
+    mpc play $(echo $station)
+    sleep 1.5
+    track_like
+  fi
+}
+
+function entry() {
+  if [ "$is_mpd_present" == "" ]; then
+    mpd
+    mpc load radio > /dev/null
+    echo "1"
+  else
+    echo $(select_in_menu "switch station,add_station,now playing,like,stop")
+  fi
+}
+
+function leave() {
+  mpc stop
+  mpc clear
+  killall mpd
+}
+
+function track_like() {
+  if [[ "$1" == "" ]]; then
+    header="Now playing:"
+  else
+    header="Like:"
+  fi
+
+  current_track=$(mpc -f %title% current)
+  termux-toast -b black -g top "$header $current_track"
+  is_track_present=$(cat "$TRACKS_FILE" | grep "$current_track")
+
+  if [[ "$1" != "" ]] && [[ "$is_track_present" == "" ]]; then
+    echo "- $current_track" >> "$TRACKS_FILE"
+  fi
+}
+
+function new_station() {
+  station_url=$(input_text "station_url")
+  station_alias=$(input_text "station_alias")
+
+  if [[ "$station_url" != "" ]] && [[ "$station_alias" != "" ]]; then
+    echo "$station_url" >> $PLAYLIST_FILE
+    echo "$station_alias" >> $INDEX_FILE
+    mpc add "$station_url"
+  fi
+}
+
+function main() {
+  entry_point=$(entry)
+
+  case "$entry_point" in
+    "1")
+      play_station
+    ;;
+    "2")
+      new_station
+    ;;
+    "3")
+      track_like
+    ;;
+    "4")
+      track_like 1
+    ;;
+    "5")
+      leave
+    ;;
+    *)
+      exit
+    ;;
+  esac
+}
+
+main
+

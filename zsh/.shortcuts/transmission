@@ -1,0 +1,21 @@
+#!/bin/env bash
+
+# Uncomment to debug
+# set -x
+
+is_proc_present=$(ps -A | grep transmission-daemon)
+
+if [[ "$is_proc_present" == "" ]]; then
+  termux-wake-lock
+  transmission-daemon
+  pid=$(ps -A | grep transmission | awk '{print $1}')
+fi
+
+termux-open-url http://127.0.0.1:9091
+
+if [[ "$is_proc_present" == "" ]]; then
+  read -p "Press any key to stop transmission"
+  kill $pid
+  termux-wake-unlock
+fi
+

@@ -1,0 +1,34 @@
+#!/bin/env bash
+
+function get_ip() {
+  ip=$(ifconfig 2> /dev/null | grep "inet" | awk '{print $2}' | tail -n1)
+
+  echo $ip
+}
+
+function get_port() {
+  echo $(sudo ss -4tlp | grep sshd | awk '{print $4}' | cut -d: -f2)
+}
+
+pid=$(ps -A | grep 'sshd' | awk '{print $1}')
+
+if [ "$pid" != "" ]; then
+  echo -e "SSHD already working!\n"
+  read -p "Press any key to exit..."
+else
+  termux-wake-lock
+  sshd
+  pid=$(ps -A | grep -E 'sshd$' | awk '{print $1}')
+  echo -e "SSHD was started!\n"`
+         `"PID: ${pid}\n"`
+         `"IP address: $(get_ip)\n"`
+         `"Port: $(get_port)\n"`
+         `"User: $(whoami)\n"`
+         `"Home: /data/data/com.termux/files/home\n\n"
+
+  read -p "Press any key to stop SSHD"
+
+  kill $pid
+  termux-wake-unlock
+fi
+

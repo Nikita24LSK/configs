@@ -3,8 +3,12 @@
 
 
 # Path to your oh-my-zsh installation.
+export BASE_DIR=/data/data/com.termux/files
 export ZSH=$HOME/.oh-my-zsh
-export JAVA_HOME=$PREFIX/opt/openjdk
+export JAVA_HOME=$BASE_DIR/usr/lib/jvm/java-17-openjdk
+export GOPATH=$HOME/go
+export USERDATA="/storage/emulated/0/Documents/Termux"
+export TERM="xterm-256color"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -72,9 +76,11 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions dirhistory zsh-syntax-highlighting sudo)
+plugins=(git zsh-autosuggestions dirhistory zsh-syntax-highlighting zsh-autopair sudo)
 
 source $ZSH/oh-my-zsh.sh
+source /data/data/com.termux/files/usr/share/fzf/completion.zsh
+source /data/data/com.termux/files/usr/share/fzf/key-bindings.zsh
 
 # User configuration
 
@@ -100,24 +106,26 @@ source $ZSH/oh-my-zsh.sh
 
 # Aliases
 
+alias ud="cd /storage/emulated/0/Documents/Termux"
 alias vim="nvim"
 alias vimrc="cd ~/.config/nvim/lua/custom/ && nvim ./init.lua && cd -"
-alias vims="sudo nvim"
-alias zshrc="vim ~/.zshrc"
+alias svim="sudo nvim"
+alias svifm="sudo vifm"
+alias zshrc="nvim ~/.zshrc"
 alias pacconf="nvim $PREFIX/etc/apt/sources.list"
-alias pacup="apt update && apt upgrade"
-alias pacfind="apt search"
-alias pacinst="apt install -y"
-alias pacdel="apt remove -y"
-alias vims="sudo vim"
-alias sysrw="~/.shortcuts/tasks/sysrw"
-alias sshsrv="~/.config/scripts/sshsrv"
-alias frida-inject="su -c /data/local/tmp/frida-inject"
-alias frida-server="su -c /data/local/tmp/frida-server"
+alias pacup="apt update && apt -y upgrade"
+alias pacsearch="apt search"
+alias pacinst="apt list 2>/dev/null | grep -v "installed" | awk -F'/' 'NR>1 {print \$1}' | fzf -m --color=bw --preview-window=up:55\%:wrap --preview 'apt info {} 2>/dev/null' | xargs -r apt install -y"
+alias pacdel="apt list --installed 2>/dev/null | awk -F'/' 'NR>1 {print \$1}' | fzf -m --color=bw --preview-window=up:55\%:wrap --preview 'apt info {} 2>/dev/null' | xargs -r apt remove -y"
+
+# alias sysrw="$HOME/.shortcuts/tasks/sysrw"
+alias sshsrv="$HOME/.shortcuts/sshsrv"
+alias frida-inject="su -c $HOME/frida//frida-inject"
+alias frida-server="su -c $HOME/frida//frida-server -l 127.0.0.1 -D"
 alias frida="sudo frida"
 alias frida-ps="sudo frida-ps"
 alias frida-trace="sudo frida-trace"
-alias apksigner="java -jar $PREFIX/bin/uber-apk-signer-1.3.0.jar"
+alias datasync="$HOME/.termux/boot/syncthing"
 
 # Exports of environment variables
 

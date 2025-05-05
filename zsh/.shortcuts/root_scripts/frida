@@ -1,0 +1,13 @@
+#!/bin/env bash
+
+FRIDA_PATH="/data/data/com.termux/files/home/frida"
+
+
+if [ "$(sudo ps -A | grep frida-server)" == "" ]; then
+  termux-toast -b black -g top "Frida was started"
+  sudo $DEST_DIR/frida-server
+else
+  sudo killall frida-server
+  termux-toast -b black -g top "Frida was stopped"
+fi
+

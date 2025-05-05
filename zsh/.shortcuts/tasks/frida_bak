@@ -1,0 +1,10 @@
+#!/bin/env bash
+
+SCRIPT="/data/data/com.termux/files/home/.shortcuts/root_scripts/frida"
+
+if [ -f "$SCRIPT" ]; then
+  su -c "$SCRIPT"
+else
+  termux-toast -b black -g top "Script not found!"
+fi
+

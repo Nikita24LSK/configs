@@ -11,13 +11,14 @@ if [[ "${1}" == "h" ]] || [[ "${1}" == "-h" ]] || [[ "${1}" == "help" ]] || [[ "
           "Params:\n" \
           "  query - start fzf with specific query\n" \
           "  mode - searching mode 'f': files (default mode) or 's': strings\n" \
-          "  start_directory - starting point for searching\n\n" \
+          "  start_directory - starting point for searching (default is current directory)\n\n" \
           "Hotkeys:\n" \
           "  Ctrl-f - switch to the files searching\n" \
           "  Ctrl-s - switch to the strings searching\n" \
           "  Ctrl-x - lock results and searching through fzf\n" \
           "  Ctrl-e - open highlighted result in Vim without fzrg closing\n" \
-          "  Tab - select line\n\n\n"
+          "  Tab - select line\n" \
+          "  Enter - open all selected results in vim\n\n\n"
   exit
 fi
 

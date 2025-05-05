@@ -1,6 +1,8 @@
 #!/bin/bash
 
-CUSTOM_IMAGES_DIR=$ANDROID_HOME/custom_images
+export QT_QPA_PLATFORM=xcb
+
+CUSTOM_IMAGES_DIR=$ANDROID_HOME/custom-images
 HAS_AVD=false
 BURP_FLAG=false
 VERBOSE=false
@@ -77,12 +79,18 @@ do
      EDIT_PARAMS=false
      shift
     ;;
+   "nogpu")
+     echo "No gpu params option detected"
+     EMU_PARAMS=$EMU_PARAMS" -gpu off"
+     shift
+    ;;
    "help")
      echo -e "Usage this options:\n" \
        "avd - specify AVD name\n" \
        "burp - start emulator with localhost:8080 proxy for BurpSuite\n" \
        "dns \"dns-server-address\" - use custom DNS server\n" \
        "no_edit - disable editing of emulator parameters\n" \
+       "nogpu - disable hw acceleration\n" \
        "proxy \"login:password@host:port\" - specify emulator proxy\n" \
        "phone \"number\" - set phone number to emulator\n" \
        "sys - use original (non-modified) system image\n" \
@@ -148,6 +156,7 @@ esac
 
 if [ "$ORIGINAL_SYS" == "false" ]; then
   EMU_PARAMS=$EMU_PARAMS" -system $CUSTOM_IMAGES_DIR/$android_api/$avd_tag/$avd_abi/system.img"
+  EMU_PARAMS=$EMU_PARAMS" -ramdisk $CUSTOM_IMAGES_DIR/$android_api/$avd_tag/$avd_abi/ramdisk.img"
 fi
 
 EMU_PARAMS=$EMU_PARAMS" -writable-system -delay-adb -no-audio -no-boot-anim -ranchu -no-snapstorage -avd $AVD_NAME"
