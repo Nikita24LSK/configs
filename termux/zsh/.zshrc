@@ -7,7 +7,6 @@ export BASE_DIR=/data/data/com.termux/files
 export ZSH=$HOME/.oh-my-zsh
 export JAVA_HOME=$BASE_DIR/usr/lib/jvm/java-17-openjdk
 export GOPATH=$HOME/go
-export USERDATA="/storage/emulated/0/Documents/Termux"
 export TERM="xterm-256color"
 
 # Set name of the theme to load --- if set to "random", it will
@@ -106,7 +105,6 @@ source /data/data/com.termux/files/usr/share/fzf/key-bindings.zsh
 
 # Aliases
 
-alias ud="cd /storage/emulated/0/Documents/Termux"
 alias vim="nvim"
 alias vimrc="cd ~/.config/nvim/lua/custom/ && nvim ./init.lua && cd -"
 alias svim="sudo nvim"
@@ -120,12 +118,9 @@ alias pacdel="apt list --installed 2>/dev/null | awk -F'/' 'NR>1 {print \$1}' | 
 
 # alias sysrw="$HOME/.shortcuts/tasks/sysrw"
 alias sshsrv="$HOME/.shortcuts/sshsrv"
-alias frida-inject="su -c $HOME/frida//frida-inject"
-alias frida-server="su -c $HOME/frida//frida-server -l 127.0.0.1 -D"
 alias frida="sudo frida"
 alias frida-ps="sudo frida-ps"
 alias frida-trace="sudo frida-trace"
-alias datasync="$HOME/.termux/boot/syncthing"
 
 # Exports of environment variables
 
