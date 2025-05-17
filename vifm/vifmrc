@@ -22,6 +22,7 @@ if has('win')
   nnoremap rs :FZFfind<cr>
 else
   set syscalls
+  let $VIFM_PREFIX = ' '
   let $username=system('whoami')
   let &rulerformat = "[" . $username . "]" . '%=%l/%S [%L]'
 
