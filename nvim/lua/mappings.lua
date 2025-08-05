@@ -28,8 +28,8 @@ map("n", "<leader>tp", ":tabprev<CR>", { desc = "Select prev tab" })
 map("n", "<leader>e", ":Trouble<CR>", { desc = "Open trouble window" })
 map("i", "jj", "<ESC>", { desc = "Escape from insert mode" })
 map("t", "ii", "<C-\\><C-N>", { desc = "Escape from term mode"})
-map("v", "J", ":m '>+1<CR>gv=gv")
-map("v", "K", ":m '<-2<CR>gv=gv")
+map("v", "J", ":m '>+<C-R>=v:count == 0 ? 1 : v:count<CR><CR>gv=gv")
+map("v", "K", ":m '<-<C-R>=v:count == 0 ? 2 : v:count+1<CR><CR>gv=gv")
 
 for i =1, 9, 1 do
   map("n", string.format("<A-%s>", i), function()

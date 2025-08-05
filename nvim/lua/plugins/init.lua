@@ -20,7 +20,7 @@ return {
 
   {
     "nvim-tree/nvim-tree.lua",
-    opts = {view = {side = "right", adaptive_size = false}, },
+    opts = {view = {side = "right"}, },
   },
 
   {
