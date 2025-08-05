@@ -14,10 +14,17 @@ M.base46 = {
       bg = "statusline_bg"
     },
     ColorColumn = {
-      bg = "#060605"
+      bg = "#101317",
     },
   }
 }
+
+M.ui = {
+  tabufline = {
+    order = {"buffers", "tabs"}
+  }
+}
+
 
 return M
 

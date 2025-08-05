@@ -7,6 +7,9 @@ local opt = vim.opt
 local wo = vim.wo
 local o = vim.o
 
+api.nvim_set_hl(0, "StatusLine", {reverse = false})
+api.nvim_set_hl(0, "StatusLineNC", {reverse = false})
+
 -- Custom commands
 api.nvim_create_user_command('ReadColor',
   function()

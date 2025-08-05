@@ -19,6 +19,11 @@ return {
   },
 
   {
+    "nvim-tree/nvim-tree.lua",
+    opts = {view = {side = "right", adaptive_size = false}, },
+  },
+
+  {
   	"williamboman/mason.nvim",
   	opts = {
   		ensure_installed = {

@@ -82,7 +82,7 @@ ls.add_snippets("javascript", {
     ls.i(1, "name"),
     ls.t({"\": {", "", "  "}),
     ls.i(2, "// Hooks"),
-    ls.t({"", "},", "", ""}),
+    ls.t({"", "},", ""}),
   }),
 
   ls.s("full_addr_native_arfa", {
