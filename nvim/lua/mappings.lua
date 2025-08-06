@@ -5,10 +5,17 @@ require "nvchad.mappings"
 local map = vim.keymap.set
 local api = vim.api
 
+local function open_aerial()
+  local aerial = require("aerial")
+  if vim.bo.filetype ~= "NvimTree" then
+    aerial.toggle()
+  end
+end
+
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 map({ "n", "i", "v" }, "<A-j>", "<cmd>HopWord<cr>")
 map("n", ";", ":", { desc = "CMD enter command mode" })
-map({ "n" }, "<leader>a", "<cmd>AerialToggle!<cr>")
+map({ "n" }, "<leader>a", open_aerial)
 map("i", "jj", "<ESC>")
 map("n", "<A-=>", "<C-w>=", { desc = "Align windows sizes" })
 map("n", "=", "gg=G<C-o>:write<CR>", { desc = "Fix identation in whole file" })

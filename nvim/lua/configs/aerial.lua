@@ -3,6 +3,7 @@ require("aerial").setup({
     max_width = { 40, 0.2 },
     width = nil,
     min_width = 20,
+    default_direction = "right",
   },
 
   close_automatic_events = { "unsupported" },
