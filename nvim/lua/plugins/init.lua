@@ -20,7 +20,10 @@ return {
 
   {
     "nvim-tree/nvim-tree.lua",
-    opts = {view = {side = "right"}, },
+    opts = {
+      view = {side = "right"},
+      filters = {dotfiles = true, git_ignored = false,}
+    },
   },
 
   {
