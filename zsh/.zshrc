@@ -4,7 +4,7 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
-export QT_QPA_PLATFORMTHEME="qt5ct"
+# export QT_QPA_PLATFORMTHEME="qt5ct"
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk/
 export ANDROID_HOME=$HOME/Android/Sdk
 export ANDROID_SDK_ROOT=$ANDROID_HOME
@@ -12,8 +12,12 @@ export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
-export PATH=$PATH:$ANDROID_HOME/build-tools/33.0.0
+export PATH=$PATH:$ANDROID_HOME/build-tools/34.0.0
 export LIBVIRT_DEFAULT_URI=qemu:///system
+export TERM="xterm-256color"
+export ZDOTDIR=$HOME
+export VENVS_DIR="$HOME/prog/venvs"
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -52,7 +56,7 @@ DISABLE_UPDATE_PROMPT="true"
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
@@ -84,6 +88,8 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 plugins=(git zsh-autosuggestions dirhistory zsh-syntax-highlighting sudo zsh-autopair)
 
 source $ZSH/oh-my-zsh.sh
+source /usr/share/fzf/completion.zsh
+source /usr/share/fzf/key-bindings.zsh
 
 # User configuration
 
@@ -107,51 +113,107 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-function workcode() {
-  cd ~/work/android-platform-frida/
-  source ./venv/bin/activate
+function venv_manager() {
+  venv_num=$1
+  if [[ "$VENVS_DIR" == "" ]]; then
+    echo -e "\nVenvs dir is not set. Please set variable VENVS_DIR in zshrc\n"
+    return 0
+  fi
 
-  nvim -c "source $HOME/.config/nvim/lua/custom/scripts/init_workcode.lua" $@
+  echo -e "Venvs dir is: $VENVS_DIR"
 
-  deactivate
-  cd -
+  if [ ! -d $VENVS_DIR ]; then
+    echo -e "Venvs dir does not exists :(\n"
+    return 0
+  fi
+
+  dir_list=($(ls $VENVS_DIR))
+  if [[ "${#dir_list[@]}" == "0" ]]; then
+    echo -e "Venvs dir is empty :(\n"
+    return 0
+  fi
+  
+  venvs=""
+
+  for file in ${dir_list[@]}; do
+    if [ ! -d $VENVS_DIR/$file ] || [ ! -f $VENVS_DIR/$file/bin/activate ]; then
+      continue
+    fi
+
+    venvs="$venvs $file"
+  done
+
+  venvs=(${=venvs})
+
+  if [[ "${#venvs[@]}" == "0" ]]; then
+    echo -e "There is no Python venvs :(\n"
+    return 0
+  fi
+
+  if [[ "$venv_num" == "" ]]; then
+    for (( i=1; i<$(( ${#venvs[@]}+1 )); i++ ))
+    do
+      echo -e "[$(( $i ))] ${venvs[$i]}"
+    done
+    echo -e "[$(( i ))] cancel\n"
+
+    read "?Choice venv: " choice
+    
+    if [[ "$choice" == "$(( i ))" ]]; then
+      echo -e "Canceling...\n"
+      return 0
+    fi
+  else
+    choice=$venv_num
+  fi
+
+  venv=${venvs[$choice]}
+
+  echo -e "Activate venv: $venv\n"
+
+  activate_script=$VENVS_DIR/$venv/bin/activate
+
+  source $activate_script
+}
+
+function long_task() {
+  task_str="${@}"
+  $@ && notify-send -t 0 "Long Task: Success" ${task_str} || notify-send -t 0 "Long Task: Fail" ${task_str}
 }
 
 # Aliases
 
+alias vim="nvim"
 alias termrc="cd ~/.config/alacritty/ && nvim ./alacritty.yml && cd -"
 alias vimrc="cd ~/.config/nvim/lua/custom/ && nvim ./init.lua && cd -"
 alias picomrc="cd ~/.config/picom/ && nvim ./picom.conf && cd -"
 alias bsprc="cd ~/.config/bspwm && nvim ./bspwmrc && cd -"
 alias sxhkdrc="cd ~/.config/sxhkd/ && nvim ./sxhkdrc && cd -"
 alias ewwrc="cd ~/.config/eww/bar_horizontal && nvim ./eww.yuck && cd -"
-alias zshrc="vim ~/.zshrc"
+alias zshrc="nvim ~/.zshrc"
 alias sshfs_umount="fusermount3 -u"
-alias pacconf="sudo vim /etc/pacman.conf"
+alias pacconf="sudo nvim /etc/pacman.conf"
 alias pacup="sudo pacman -Suy"
-alias pacinst="sudo pacman -S"
-alias pacdel="sudo pacman -Rs"
+alias pacinst="pacman -Sl | grep -v 'installed' | awk '{print \$2}' | fzf --color=bw -m --preview 'pacman -Si {}' --preview-window=right:55\%:wrap | xargs -r sudo pacman -S --noconfirm"
+alias pacdel="pacman -Sl | grep 'installed' | awk '{print \$2}' | fzf --color=bw -m --preview 'pacman -Si {}' --preview-window=right:55\%:wrap | xargs -r sudo pacman -Rns --noconfirm"
 alias syslist="systemctl list-unit-files"
+alias sysreload="sudo systemctl daemon-reload"
 alias systart="sudo systemctl start"
 alias systop="sudo systemctl stop"
 alias sysrestart="sudo systemctl restart"
 alias systatus="sudo systemctl status"
 alias sysenable="sudo systemctl enable"
 alias sysdisable="sudo systemctl disable"
-alias vims="sudo vim"
-alias vifm="vifmrun"
+alias svim="sudo nvim"
+alias svifm="sudo vifm"
 alias dimg="docker image ls -a"
 alias dcont="docker container ls -a"
 alias dimgrm="docker image rm"
 alias dcontrm="docker container rm"
-alias appium="PATH=/home/nikita/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/nikita/.local/bin:/home/nikita/Android/Sdk/emulator:/home/nikita/Android/Sdk/platform-tools:/home/nikita/Android/Sdk/cmdline-tools/latest/bin:/home/nikita/Android/Sdk/build-tools/33.0.0 appium"
-alias globpath="PATH=/home/nikita/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/nikita/.local/bin:/home/nikita/Android/Sdk/emulator:/home/nikita/Android/Sdk/platform-tools:/home/nikita/Android/Sdk/cmdline-tools/latest/bin:/home/nikita/Android/Sdk/build-tools/33.0.0"
+alias scan="scanimage --device \"airscan:e0:Pantum-M6500W-Series 85133B\" --format=png --output-file"
 
 # Exports of environment variables
 
-export EDITOR=vim
+export EDITOR=nvim
 
-# Section with history ignore
 
-HISTORY_IGNORE="(reset|history|zshrc|i3conf|polyconf|theme|vboxinet|pacconf)"
-. /opt/asdf-vm/asdf.sh
