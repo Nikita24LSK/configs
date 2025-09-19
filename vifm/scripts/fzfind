@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# For debugging
+# set -x
+
+VIM="nvim"
+
+if [[ "${1}" == "" ]]; then
+  start_state='start:reload:echo ""'
+else
+  start_state="start:reload:rg --color=always --smart-case --hidden --files ${2} | rg '${1}'"
+fi
+
+results=($(
+  fzf -m --disabled --ansi \
+    --query "${1}" \
+    --delimiter ':' \
+    --bind "$start_state" \
+    --bind "change:reload:[[ {q} == '' ]] || rg --color=always --smart-case --hidden --files ${2} | rg {q} || true" \
+    --bind "ctrl-e:execute:${VIM} {1}" | sed 's/\$/\\$/g'
+))
+
+vim_command="${VIM}"
+
+for ((i=0;i<${#results[@]};i++)); do
+  vim_command="${vim_command} ${results[${i}]}"
+done
+
+if [[ "${vim_command}" != "${VIM}" ]]; then
+  eval "${vim_command}"
+fi
+

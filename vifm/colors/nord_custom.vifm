@@ -45,6 +45,9 @@ highlight {*.avi}     cterm=bold  ctermfg=141 ctermbg=default
 highlight {*.wav}     cterm=bold  ctermfg=141 ctermbg=default
 highlight {*.jpg}     cterm=bold  ctermfg=166 ctermbg=default
 highlight {*.jpeg}    cterm=bold  ctermfg=166 ctermbg=default
+highlight {*.heic}    cterm=bold  ctermfg=166 ctermbg=default
 highlight {*.png}     cterm=bold  ctermfg=166 ctermbg=default
 highlight {*.bmp}     cterm=bold  ctermfg=166 ctermbg=default
+highlight {*.pcap}     cterm=bold  ctermfg=111 ctermbg=default
+highlight {*.pcapng}     cterm=bold  ctermfg=111 ctermbg=default
 

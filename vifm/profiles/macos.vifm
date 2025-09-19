@@ -1,0 +1,31 @@
+let $py_interpreter="python3"
+
+filetype *.jpg,*.png,*.bmp,*.heic,*.pdf open -a "Preview" %"f%i&
+filetype *.mkv,*.mp3,*.wav,*.avi,*.mp4 open -a "QuickTime Player" %"f%i&
+filetype *.dmg open %"f%i&
+filetype *.pcap,*.pcapng open -a "Wireshark" %"f%i&
+filetype *.htm,*.html open -a "Zen" %"c:p &
+filetype *.doc,*.docx,*.ods open -a "Microsoft Word" %"f%i&
+filetype *.xls,*.xlsx open -a "Microsoft Excel" %"f%i&
+filetype *.ppt,*.pptx open -a "Microsoft PowerPoint" %"f%i&
+
+if $KITTY_PID != ''
+  fileviewer <image/*>
+      \ kitten icat --silent --transfer-mode=file --place=%pwx%ph@%pxx%py %c >/dev/tty </dev/tty %N
+      \ %pc
+      \ kitten icat --clear --silent >/dev/tty </dev/tty %N
+endif
+
+nnoremap rH :!open -a "ImHex" '%f&i'&<cr>
+
+" yank current directory path into the clipboard
+nnoremap yd :!echo -n %"d | pbcopy %i<cr>:echo expand('%"d') "is yanked to clipboard"<cr>
+
+" yank current file path into the clipboard
+nnoremap yf :!echo -n %"c:p | pbcopy %i<cr>:echo expand('%"c:p') "is yanked to clipboard"<cr>
+
+" yank current filename without path into the clipboard
+nnoremap yn :!echo -n %"c | pbcopy %i<cr>:echo expand('%"c') "is yanked to clipboard"<cr>
+
+" yank root of current file's name into the clipboard
+nnoremap yr :!echo -n %"c:r | pbcopy %i<cr>:echo expand('%"c:r') "is yanked to clipboard"<cr>

@@ -24,6 +24,7 @@ else
   set syscalls
   let $VIFM_PREFIX = ' '
   let $username=system('whoami')
+  let $os=system('uname')
   let &rulerformat = "[" . $username . "]" . '%=%l/%S [%L]'
 
   filetype *.zip unzip -l %"f%m
@@ -60,8 +61,10 @@ else
   " Determine Termux
   if $TERMUX_VERSION != ''
     source $VIFM/profiles/termux.vifm
-  else
+  elseif $os == "Linux"
     source $VIFM/profiles/linux.vifm
+  else
+    source $VIFM/profiles/macos.vifm
   endif
 endif
 
