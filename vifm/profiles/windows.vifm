@@ -11,7 +11,7 @@ filextype *.xls,*.xlsx EXCEL %"f%i&
 filextype *.ppt,*.pptx POWERPNT %"f%i&
 filextype *.mp3,*.wav,*.avi,*.mp4 vlc %"f%i&
 filextype *.rar,*.zip,*.7z,*.tar,*.tar.gz,*.tar.xz winrar %"f%i&
-filextype *.htm,*.html firefox %"c:p &
+filextype *.htm,*.html zen %"c:p &
 filextype *.jpg,*.png,*.bmp MaxView %"d &
 filextype *.torrent qbittorrent %"c:p &
 filextype *.reg regedit %"c &

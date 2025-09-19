@@ -10,7 +10,7 @@ filextype *.ppt,*.pptx libreoffice %"f%i&
 filextype *.pcap,*.pcapng wireshark %"f%i&
 filextype *.burp burpsuite %"f%i&
 filextype *.mkv,*.mp3,*.wav,*.avi,*.mp4 vlc %"f%i&
-filextype *.htm,*.html firefox %"c:p &
+filextype *.htm,*.html zen %"c:p &
 
 if $KITTY_PID != ''
   fileviewer <image/*>
