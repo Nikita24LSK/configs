@@ -81,3 +81,10 @@ vim.api.nvim_create_autocmd("FileType", {
   end
 })
 
+vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+  pattern = {"*.yar", "*.yara"},
+  callback = function()
+    vim.bo.filetype = "yara"
+  end
+})
+

@@ -1,5 +1,20 @@
 local ls = require("luasnip")
 
+-- Yara snippets
+ls.add_snippets("yara", {
+
+  ls.s("yara_rule", {
+    ls.t("rule "),
+    ls.i(1, "rulename"),
+    ls.t({" {", "  strings:", "    "}),
+    ls.i(2, "searching_strings"),
+    ls.t({"", "", "  condition:", "    "}),
+    ls.i(3, "match_condition"),
+    ls.t({"", "}", ""})
+  }),
+
+})
+
 -- JS snippets
 ls.add_snippets("javascript", {
 
