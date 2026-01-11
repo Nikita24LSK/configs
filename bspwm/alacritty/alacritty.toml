@@ -1,32 +1,33 @@
 [colors.bright]
 black = "0x414458"
-blue = "0x7AB0DF"
-cyan = "0x50CAD2"
-green = "0x37D99E"
-magenta = "0xC397D8"
-red = "0xF87070"
-white = "0xD4D5D5"
-yellow = "0xFFE59E"
+blue = "0x7ab0df"
+cyan = "0x50cad2"
+green = "0x37d99e"
+magenta = "0xc397d8"
+red = "0xf87070"
+white = "0xd4d5d5"
+yellow = "0xffe59e"
 
 [colors.normal]
-black = "0x282A36"
-blue = "0x7AB0DF"
-cyan = "0x50CAD2"
-green = "0x37D99E"
-magenta = "0xC397D8"
-red = "0xF87070"
-white = "0xD4D5D5"
-yellow = "0xFFE59E"
+black = "0x414458"
+blue = "0x7ab0df"
+cyan = "0x50cad2"
+green = "0x37d99e"
+magenta = "0xc397d8"
+red = "0xf87070"
+white = "0xd4d5d5"
+yellow = "0xffe59e"
 
 [colors.primary]
-background = "0x101317"
-foreground = "0xD4D5D5"
+background = "0x000000"
+# background = "0x101017"
+foreground = "0xd4d5d5"
 
 [env]
 TERM = "xterm-256color"
 
 [font]
-size = 7.5
+size = 12
 
 [font.bold]
 family = "JetBrainsMono Nerd Font"
@@ -52,7 +53,7 @@ mods = "Shift"
 [[keyboard.bindings]]
 action = "SpawnNewInstance"
 key = "T"
-mods = "Control"
+mods = "Control|Shift"
 
 [[keyboard.bindings]]
 action = "ScrollLineUp"
@@ -85,6 +86,12 @@ hide_when_typing = true
 columns = 85
 lines = 21
 
+[terminal.shell]
+program = "tmux"
+
 [window.padding]
-x = 2
-y = 2
+x = 10
+y = 5
+
+[window]
+opacity = 1.0
