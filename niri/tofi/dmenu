@@ -1,0 +1,17 @@
+anchor = bottom
+width = 100%
+height = 35
+horizontal = true
+font-size = 12
+font = JetBrainsMono Nerd Font
+prompt-text = " Account: "
+outline-width = 0
+border-width = 0
+background-color = #0c0c16dd
+min-input-width = 120
+result-spacing = 15
+padding-left = 0
+padding-right = 0
+input-color = #ddddddff
+default-result-color = #747d84ff
+selection-color = #ddddddff
