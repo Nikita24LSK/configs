@@ -1,0 +1,101 @@
+{
+
+  // Left modules
+
+  "clock": {
+    "interval": 10,
+    "tooltip": true,
+    "format": "󱑆 {:%H:%M}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 1,
+      "on-scroll": 1,
+      "actions": {
+        "on-click-right": "mode",
+        "on-scroll-up": "shift_up",
+        "on-scroll-down": "shift_down"
+      },
+      "format": {
+        "today": "<span color='#df1717'><b>{}</b></span>"
+      }
+    }
+  },
+
+  "disk": {
+    "interval": 10,
+    "format": "󰋊 {specific_free:0.2f}",
+    "unit": "GiB",
+    "path": "/"
+  },
+
+  "disk#home": {
+    "interval": 10,
+    "format": "󰋊 {specific_free:0.2f}",
+    "unit": "GiB",
+    "path": "/home"
+  },
+
+  "custom/weather": {
+    "exec": "/home/nikita/.config/waybar/scripts/weather",
+    "interval": 900,
+    "format": "{}",
+    "tooltip": false
+  },
+
+  "tray": {
+    "icon-size": 24,
+    "tooltip": false,
+    "spacing": 5
+  },
+
+
+  // Middle modules
+
+  "niri/window": {
+    "format": "{}",
+    "max-length": 64
+    // "rewrite": {
+    //   "[\u200e\u2068]*([A-Za-z0-9()_]{1}|[А-Яа-яЁё]{2})(.+)": "<span color='#ff1717'><b>$1</b></span>$2"
+    // }
+  },
+
+  // Right modules
+
+  "cpu": {
+    "format": "󰍛 {usage}%",
+    "interval": 1
+  },
+
+  "memory": {
+    "format": " {percentage}%",
+    "interval": 1
+  }, 
+
+  "custom/battery": {
+    "interval": 3,
+    "tooltip": false,
+    "format": "{}",
+    "exec": "/home/nikita/.config/waybar/scripts/battery capacity",
+    "on-click-right": "/home/nikita/.config/waybar/scripts/battery toggle_notify_lock"
+  },
+
+  "niri/language": {
+    "format": "{}",
+    "format-en": "US",
+    "format-ru": "RU"
+  },
+
+  "keyboard-state": {
+    "numlock": false,
+    "capslock": true,
+    "format": {
+      "capslock": "{icon}"
+    },
+    "format-icons": {
+      "locked": "󰘲 ",
+      "unlocked": "󰌌 "
+    }
+  }
+}
+

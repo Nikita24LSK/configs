@@ -1,0 +1,15 @@
+#!/bin/bash
+
+get_weather(){
+  api_key=df1117db2e04f99c3ff4c5654dc75706
+  city_id=1502026
+
+  url="api.openweathermap.org/data/2.5/weather?id=${city_id}&appid=${api_key}&cnt=5&units=metric&lang=en"
+
+  temp=$(curl ${url} -s | jq '.main.temp')
+  symb=$(if [[ "${temp%.*}" -lt "0" ]]; then echo ""; else echo ""; fi)
+  echo "${symb} ${temp}󰔄"
+}
+
+get_weather
+

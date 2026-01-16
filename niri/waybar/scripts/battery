@@ -1,0 +1,95 @@
+#!/bin/sh
+
+LOCK_FILE=/tmp/bat_notify.lock
+bat=/sys/class/power_supply/BAT1/
+percentage="$(cat "$bat/capacity")"
+
+get_icon() {
+  if [ "$percentage" -gt "95" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      [ ! -f $LOCK_FILE ] && notify-send -t 2000 "Battery Full" "Unplug Charger"
+      icon="󰂅"
+    else
+      icon="󰂃"
+    fi
+  elif [ "$percentage" -gt "90" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      [ ! -f $LOCK_FILE ] && notify-send -t 2000 "Battery Full" "Unplug Charger"
+      icon="󰂋"
+    else
+      icon="󰂂"
+    fi
+  elif [ "$percentage" -gt "80" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      icon="󰂊"
+    else
+      icon="󰂁"
+    fi
+  elif [ "$percentage" -gt "70" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      icon="󰢞"
+    else
+      icon="󰂀"
+    fi
+  elif [ "$percentage" -gt "60" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      icon="󰂉"
+    else
+      icon="󰁿"
+    fi
+  elif [ "$percentage" -gt "50" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      icon="󰢝"
+    else
+      icon="󰁾"
+    fi
+  elif [ "$percentage" -gt "40" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      icon="󰂈"
+    else
+      icon="󰁽"
+    fi
+  elif [ "$percentage" -gt "30" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      icon="󰂇"
+    else
+      icon="󰁼"
+    fi
+  elif [ "$percentage" -gt "20" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      icon="󰂆"
+    else
+      icon="󰁻"
+    fi
+  elif [ "$percentage" -gt "10" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      icon="󰢜"
+    else
+      icon="󰁺"
+    fi
+  elif [ "$percentage" -gt "0" ]; then
+    if [ $(cat "$bat/status") = Charging ]; then
+      icon="󰢟"
+    else
+      [ ! -f $LOCK_FILE ] && notify-send -t 2000 -u critical "Battery Low: ${percentage}%" "Connect Charger"
+      icon="󱃍"
+    fi
+  fi
+
+  echo "${icon}"
+}
+
+toggle_notify_lock() {
+  if [ -f $LOCK_FILE ]; then
+    rm $LOCK_FILE
+    notify-send -t 1000 "Battery notifications are on"
+  else
+    touch $LOCK_FILE
+    notify-send -t 1000 "Battery notifications are off"
+  fi
+}
+
+[ "$1" = "capacity" ] && echo "$(get_icon) ${percentage}%" && exit
+[ "$1" = "toggle_notify_lock" ] && toggle_notify_lock && exit
+exit
+

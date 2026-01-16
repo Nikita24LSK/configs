@@ -1,0 +1,13 @@
+[
+  {
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    // "margin-top": 5,
+    "reload_style_on_change": true,
+    "modules-left": [ "clock", "disk", "disk#home", "custom/weather" ],
+    "modules-center": [ "niri/window" ],
+    "modules-right": [ "tray", "cpu", "memory", "keyboard-state", "niri/language", "custom/battery" ],
+    "include": ["/home/nikita/.config/waybar/modules.jsonc"]
+  }
+]

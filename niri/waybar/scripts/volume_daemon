@@ -1,0 +1,47 @@
+#!/bin/bash
+
+NOTIFICATION_TIMEOUT="3000"
+
+get_volume() {
+  echo $(amixer -D pipewire sget Master | grep -E 'Left:|Mono:' | awk -F'[][]' '{ print $2 }' | tr -d '%')
+}
+
+get_volume_state() {
+  echo $(amixer -D pipewire get Master 1+ | tail -n1 | cut -d" " -f8)
+}
+
+get_volume_icon() {
+  vol="${1}"
+  state="${2}"
+
+  if [ "$state" == "[off]" ]; then
+    icon="󰝟"
+  elif [ "$vol" -gt "70" ]; then
+    icon=""
+  elif [ "$vol" -gt "30" ]; then
+    icon=""
+  elif [ "$vol" -ge "0" ]; then
+    icon=""
+  fi
+
+  echo "${icon}"
+}
+
+subscribe() {
+  pactl subscribe | grep --line-buffered "sink" | while read -r event; do
+    vol_level=$(get_volume)
+    vol_state=$(get_volume_state)
+    vol_icon=$(get_volume_icon "${vol_level}" "${vol_state}")
+
+    if [[ "${vol_level}" != "${VOL_CACHE}" || "${vol_state}" != "${STATE_CACHE}" ]]; then
+      VOL_CACHE="${vol_level}"
+      STATE_CACHE="${vol_state}"
+      notify-send -t ${NOTIFICATION_TIMEOUT} -h string:x-dunst-stack-tag:volume_notify -h int:value:${vol_level} "${vol_icon} ${vol_level}"
+    fi
+  done
+}
+
+VOL_CACHE="$(get_volume)"
+STATE_CACHE="$(get_volume_state)"
+subscribe
+
