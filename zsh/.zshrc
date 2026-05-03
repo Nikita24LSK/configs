@@ -5,14 +5,8 @@
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 # export QT_QPA_PLATFORMTHEME="qt5ct"
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk/
-export ANDROID_HOME=$HOME/Android/Sdk
-export ANDROID_SDK_ROOT=$ANDROID_HOME
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$PATH:$HOME/.local/bin
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
-export PATH=$PATH:$ANDROID_HOME/build-tools/34.0.0
 export LIBVIRT_DEFAULT_URI=qemu:///system
 export TERM="xterm-256color"
 export ZDOTDIR=$HOME
@@ -113,67 +107,62 @@ source /usr/share/fzf/key-bindings.zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-function venv_manager() {
-  venv_num=$1
-  if [[ "$VENVS_DIR" == "" ]]; then
-    echo -e "\nVenvs dir is not set. Please set variable VENVS_DIR in zshrc\n"
-    return 0
+function venvs ()
+{
+  if [[ "$VENVS_DIR" == "" || ! -d "$VENVS_DIR" ]]; then
+    echo "Incorrect VENVS_DIR value!"
+    return -1
   fi
 
-  echo -e "Venvs dir is: $VENVS_DIR"
+  arg=$1
+  venv_name=$2
 
-  if [ ! -d $VENVS_DIR ]; then
-    echo -e "Venvs dir does not exists :(\n"
-    return 0
+  venvs_list=$(ls $VENVS_DIR)
+  if [[ "$venvs_list" == "" && "$arg" != "n" ]]; then
+    echo "Venv dir is empty!"
+    return -1
   fi
 
-  dir_list=($(ls $VENVS_DIR))
-  if [[ "${#dir_list[@]}" == "0" ]]; then
-    echo -e "Venvs dir is empty :(\n"
-    return 0
-  fi
-  
-  venvs=""
+  if [[ ("$arg" == "" || "$arg" == "s" || "$arg" == "r") && "$venv_name" == "" ]]; then
+    venv_name=$(ls $VENVS_DIR | fzf)
 
-  for file in ${dir_list[@]}; do
-    if [ ! -d $VENVS_DIR/$file ] || [ ! -f $VENVS_DIR/$file/bin/activate ]; then
-      continue
-    fi
-
-    venvs="$venvs $file"
-  done
-
-  venvs=(${=venvs})
-
-  if [[ "${#venvs[@]}" == "0" ]]; then
-    echo -e "There is no Python venvs :(\n"
-    return 0
-  fi
-
-  if [[ "$venv_num" == "" ]]; then
-    for (( i=1; i<$(( ${#venvs[@]}+1 )); i++ ))
-    do
-      echo -e "[$(( $i ))] ${venvs[$i]}"
-    done
-    echo -e "[$(( i ))] cancel\n"
-
-    read "?Choice venv: " choice
-    
-    if [[ "$choice" == "$(( i ))" ]]; then
-      echo -e "Canceling...\n"
+    if [[ "$venv_name" == "" ]]; then
+      echo "Cancelled!"
       return 0
     fi
-  else
-    choice=$venv_num
   fi
 
-  venv=${venvs[$choice]}
+  if [[ ("$arg" == "" || "$arg" == "s" || "$arg" == "r") && "$venv_name" != "" && ! -d "$VENVS_DIR/$venv_name" ]]; then
+    echo "$venv_name does not exists!"
+    return -1
+  fi
 
-  echo -e "Activate venv: $venv\n"
+  if [[ "$arg" == "l" ]]; then
+    echo $venvs_list
+  elif [[ "$arg" == "s" || "$arg" == "" ]]; then
+    source $VENVS_DIR/$venv_name/bin/activate
+  elif [[ "$arg" == "r" ]]; then
+    rm -rf $VENVS_DIR/$venv_name
+  elif [[ "$arg" == "n" ]]; then
+    if [[ "$venv_name" == "" ]]; then
+      echo -n "Enter venv name: "
+      read venv_name
 
-  activate_script=$VENVS_DIR/$venv/bin/activate
+      if [[ "$venv_name" == "" ]]; then
+        echo "Incorrect venv name!"
+        return -1
+      fi
+    fi
 
-  source $activate_script
+    if [[ -d "$VENVS_DIR/$venv_name" ]]; then
+      echo "Venv $venv_name already exists!"
+      return -1
+    fi
+
+    python -m venv "$VENVS_DIR/$venv_name"
+  fi
+
+  return 0
 }
 
 function long_task() {
@@ -184,12 +173,6 @@ function long_task() {
 # Aliases
 
 alias vim="nvim"
-alias termrc="cd ~/.config/alacritty/ && nvim ./alacritty.yml && cd -"
-alias vimrc="cd ~/.config/nvim/lua/custom/ && nvim ./init.lua && cd -"
-alias picomrc="cd ~/.config/picom/ && nvim ./picom.conf && cd -"
-alias bsprc="cd ~/.config/bspwm && nvim ./bspwmrc && cd -"
-alias sxhkdrc="cd ~/.config/sxhkd/ && nvim ./sxhkdrc && cd -"
-alias ewwrc="cd ~/.config/eww/bar_horizontal && nvim ./eww.yuck && cd -"
 alias zshrc="nvim ~/.zshrc"
 alias sshfs_umount="fusermount3 -u"
 alias pacconf="sudo nvim /etc/pacman.conf"
@@ -210,7 +193,6 @@ alias dimg="docker image ls -a"
 alias dcont="docker container ls -a"
 alias dimgrm="docker image rm"
 alias dcontrm="docker container rm"
-alias scan="scanimage --device \"airscan:e0:Pantum-M6500W-Series 85133B\" --format=png --output-file"
 
 # Exports of environment variables
 
