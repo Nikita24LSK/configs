@@ -4,9 +4,15 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
-# export QT_QPA_PLATFORMTHEME="qt5ct"
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+export QT_QPA_PLATFORMTHEME="qt5ct"
+export JAVA_HOME=/usr/lib/jvm/java-25-openjdk/
+export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_SDK_ROOT=$ANDROID_HOME
 export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_HOME/build-tools/36.1.0
 export LIBVIRT_DEFAULT_URI=qemu:///system
 export TERM="xterm-256color"
 export ZDOTDIR=$HOME
@@ -79,7 +85,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions dirhistory zsh-syntax-highlighting sudo zsh-autopair)
+plugins=(git zsh-autosuggestions dirhistory zsh-syntax-highlighting zsh-autopair pass)
 
 source $ZSH/oh-my-zsh.sh
 source /usr/share/fzf/completion.zsh
@@ -107,8 +113,8 @@ source /usr/share/fzf/key-bindings.zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-function venvs ()
-{
+
+function venvs () {
   if [[ "$VENVS_DIR" == "" || ! -d "$VENVS_DIR" ]]; then
     echo "Incorrect VENVS_DIR value!"
     return -1
@@ -165,6 +171,23 @@ function venvs ()
   return 0
 }
 
+function pyvenv() {
+	venv_name=${1:="venv"}
+	init_file="./${venv_name}/bin/activate"
+	venv_dir="./${venv_name}"
+
+	if [[ -e ${venv_dir} && (! -d ${venv_dir} || ! -e ${init_file}) ]]; then
+		echo "Error! Object with name '${venv_name}' already exists!"
+		return -1
+	fi
+
+	if [[ ! -e ${venv_dir} ]]; then
+		python -m venv "${venv_name}"
+	fi
+
+	source ${init_file}
+}
+
 function long_task() {
   task_str="${@}"
   $@ && notify-send -t 0 "Long Task: Success" ${task_str} || notify-send -t 0 "Long Task: Fail" ${task_str}
@@ -173,6 +196,7 @@ function long_task() {
 # Aliases
 
 alias vim="nvim"
+alias termrc="cd ~/.config/alacritty/ && nvim ./alacritty.toml && cd -"
 alias zshrc="nvim ~/.zshrc"
 alias sshfs_umount="fusermount3 -u"
 alias pacconf="sudo nvim /etc/pacman.conf"
@@ -193,9 +217,10 @@ alias dimg="docker image ls -a"
 alias dcont="docker container ls -a"
 alias dimgrm="docker image rm"
 alias dcontrm="docker container rm"
+alias scan="scanimage --device \"airscan:e0:Pantum-M6500W-Series 85133B\" --format=png --output-file"
+alias py="ipython"
 
 # Exports of environment variables
 
 export EDITOR=nvim
-
 
