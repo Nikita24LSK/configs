@@ -113,43 +113,126 @@ source /usr/share/fzf/key-bindings.zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
+function install_venv_packages() {
+  venv_type="$1"
+
+  if [[ "$venv_type" == "local" ]]; then
+    default_answers=("" "Y" "y" "yes")
+    answer_sign="[Y/n]"
+  else
+    default_answers=("Y" "y" "yes")
+    answer_sign="[y/N]"
+  fi
+
+  if [[ -f "./requirements.txt" ]]; then
+    echo -n "requirements.txt has been found. Install it? ${answer_sign} "
+    read -r answer
+
+    if [[ ${default_answers[(i)$answer]} -le ${#default_answers} ]]; then
+      python -m pip install -r ./requirements.txt
+    fi
+  fi
+
+  echo -en "\nEnter venv packages for install: "
+  read -r packages
+  packages=(${=packages})
+
+  test "${#packages[@]}" -gt 0 && python -m pip install "${packages[@]}"
+}
+
+function get_venv() {
+  venvs_list=$1
+  venv_name=$2
+
+  if [[ "$venv_name" == "" ]]; then
+    venv_name=$(echo $venvs_list | fzf)
+    if [[ "$venv_name" == "" ]]; then
+      echo "Cancelled!"
+    fi
+  fi
+
+  if [[ "$venv_name" != "" ]]; then
+    if [[ ! -d "$VENVS_DIR/$venv_name" || ! -f "$VENVS_DIR/$venv_name/bin/activate" ]]; then
+      echo "Error! Venv ${venv_name} does not exists!"
+      venv_name=""
+    fi
+  fi
+
+  echo $venv_name
+}
 
 function venvs () {
+  cmd=$1
+  venv_name=$2
+  is_new_venv=false
+  venv_type="remote"
+
+  if [[ "$cmd" == "-h" || "$cmd" == "--help" || "$cmd" == "h" || "$cmd" == "help" ]]; then
+    echo -e "Python virtual env manager:\n" \
+      "Usage: venvs <command> [venv_name]\n" \
+      "Commands:\n" \
+      "\t<empty> or s - select and activate venv inside VENVS_DIR (default action)\n" \
+      "\ta - show all venvs inside VENVS_DIR\n" \
+      "\tl - init local venv\n" \
+      "\tn - create new venv inside VENVS_DIR\n" \
+      "\tr - remove venv from VENV_DIRS\n\n"
+
+    return 0
+  fi
+
+  if [[ "$cmd" == "l" ]]; then
+    venv_type="local"
+    venv_name=${venv_name:="venv"}
+    init_file="./${venv_name}/bin/activate"
+    venv_dir="./${venv_name}"
+
+    if [[ -e ${venv_dir} && (! -d ${venv_dir} || ! -e ${init_file}) ]]; then
+      echo "Error! Object with name '${venv_name}' already exists!"
+      return -1
+    fi
+
+    if [[ ! -e ${venv_dir} ]]; then
+      python -m venv "${venv_name}"
+      is_new_venv=true
+    fi
+  fi
+
   if [[ "$VENVS_DIR" == "" || ! -d "$VENVS_DIR" ]]; then
     echo "Incorrect VENVS_DIR value!"
     return -1
   fi
 
-  arg=$1
-  venv_name=$2
-
   venvs_list=$(ls $VENVS_DIR)
-  if [[ "$venvs_list" == "" && "$arg" != "n" ]]; then
-    echo "Venv dir is empty!"
+  if [[ "$venvs_list" == "" && "$cmd" != "n" ]]; then
+    echo "Venvs dir is empty!"
     return -1
   fi
 
-  if [[ ("$arg" == "" || "$arg" == "s" || "$arg" == "r") && "$venv_name" == "" ]]; then
-    venv_name=$(ls $VENVS_DIR | fzf)
+  if [[ "$cmd" == "a" ]]; then
+    echo $venvs_list
+    return 0
+  fi
 
+  if [[ "$cmd" == "r" ]]; then
+    venv_name=$(get_venv $venvs_list $venv_name)
     if [[ "$venv_name" == "" ]]; then
-      echo "Cancelled!"
+      return -1
+    else
+      rm -rf $VENVS_DIR/$venv_name
       return 0
     fi
   fi
 
-  if [[ ("$arg" == "" || "$arg" == "s" || "$arg" == "r") && "$venv_name" != "" && ! -d "$VENVS_DIR/$venv_name" ]]; then
-    echo "$venv_name does not exists!"
-    return -1
+  if [[ "$cmd" == "" || "$cmd" == "s" ]]; then
+    venv_name=$(get_venv $venvs_list $venv_name)
+    if [[ "$venv_name" == "" ]]; then
+      return -1
+    fi
+
+    init_file="$VENVS_DIR/$venv_name/bin/activate"
   fi
 
-  if [[ "$arg" == "l" ]]; then
-    echo $venvs_list
-  elif [[ "$arg" == "s" || "$arg" == "" ]]; then
-    source $VENVS_DIR/$venv_name/bin/activate
-  elif [[ "$arg" == "r" ]]; then
-    rm -rf $VENVS_DIR/$venv_name
-  elif [[ "$arg" == "n" ]]; then
+  if [[ "$cmd" == "n" ]]; then
     if [[ "$venv_name" == "" ]]; then
       echo -n "Enter venv name: "
       read venv_name
@@ -160,32 +243,24 @@ function venvs () {
       fi
     fi
 
-    if [[ -d "$VENVS_DIR/$venv_name" ]]; then
-      echo "Venv $venv_name already exists!"
+    init_file="$VENVS_DIR/$venv_name/bin/activate"
+
+    if [[ -e "$VENVS_DIR/$venv_name" && (! -d "$VENVS_DIR/$venv_name" || ! -e ${init_file}) ]]; then
+      echo "Error! Object with name '${venv_name}' already exists!"
       return -1
     fi
 
     python -m venv "$VENVS_DIR/$venv_name"
+    is_new_venv=true
+  fi
+
+  source ${init_file}
+
+  if [[ "$is_new_venv" == "true" ]]; then
+    install_venv_packages $venv_type
   fi
 
   return 0
-}
-
-function pyvenv() {
-	venv_name=${1:="venv"}
-	init_file="./${venv_name}/bin/activate"
-	venv_dir="./${venv_name}"
-
-	if [[ -e ${venv_dir} && (! -d ${venv_dir} || ! -e ${init_file}) ]]; then
-		echo "Error! Object with name '${venv_name}' already exists!"
-		return -1
-	fi
-
-	if [[ ! -e ${venv_dir} ]]; then
-		python -m venv "${venv_name}"
-	fi
-
-	source ${init_file}
 }
 
 function long_task() {
