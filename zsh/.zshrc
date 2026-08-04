@@ -175,7 +175,7 @@ function venvs () {
       "\ta - show all venvs inside VENVS_DIR\n" \
       "\tl - init local venv\n" \
       "\tn - create new venv inside VENVS_DIR\n" \
-      "\tr - remove venv from VENV_DIRS\n\n"
+      "\tr - remove venv from VENVS_DIRS\n\n"
 
     return 0
   fi
