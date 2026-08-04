@@ -129,7 +129,7 @@ function install_venv_packages() {
     read -r answer
 
     if [[ ${default_answers[(i)$answer]} -le ${#default_answers} ]]; then
-      python -m pip install -r ./requirements.txt
+      python3 -m pip install -r ./requirements.txt
     fi
   fi
 
@@ -137,7 +137,7 @@ function install_venv_packages() {
   read -r packages
   packages=(${=packages})
 
-  test "${#packages[@]}" -gt 0 && python -m pip install "${packages[@]}"
+  test "${#packages[@]}" -gt 0 && python3 -m pip install "${packages[@]}"
 }
 
 function get_venv() {
@@ -192,66 +192,66 @@ function venvs () {
     fi
 
     if [[ ! -e ${venv_dir} ]]; then
-      python -m venv "${venv_name}"
+      python3 -m venv "${venv_name}"
       is_new_venv=true
     fi
-  fi
-
-  if [[ "$VENVS_DIR" == "" || ! -d "$VENVS_DIR" ]]; then
-    echo "Incorrect VENVS_DIR value!"
-    return -1
-  fi
-
-  venvs_list=$(ls $VENVS_DIR)
-  if [[ "$venvs_list" == "" && "$cmd" != "n" ]]; then
-    echo "Venvs dir is empty!"
-    return -1
-  fi
-
-  if [[ "$cmd" == "a" ]]; then
-    echo $venvs_list
-    return 0
-  fi
-
-  if [[ "$cmd" == "r" ]]; then
-    venv_name=$(get_venv $venvs_list $venv_name)
-    if [[ "$venv_name" == "" ]]; then
+  else
+    if [[ "$VENVS_DIR" == "" || ! -d "$VENVS_DIR" ]]; then
+      echo "Incorrect VENVS_DIR value!"
       return -1
-    else
-      rm -rf $VENVS_DIR/$venv_name
+    fi
+
+    venvs_list=$(ls $VENVS_DIR)
+    if [[ "$venvs_list" == "" && "$cmd" != "n" ]]; then
+      echo "Venvs dir is empty!"
+      return -1
+    fi
+
+    if [[ "$cmd" == "a" ]]; then
+      echo $venvs_list
       return 0
     fi
-  fi
 
-  if [[ "$cmd" == "" || "$cmd" == "s" ]]; then
-    venv_name=$(get_venv $venvs_list $venv_name)
-    if [[ "$venv_name" == "" ]]; then
-      return -1
-    fi
-
-    init_file="$VENVS_DIR/$venv_name/bin/activate"
-  fi
-
-  if [[ "$cmd" == "n" ]]; then
-    if [[ "$venv_name" == "" ]]; then
-      echo -n "Enter venv name: "
-      read venv_name
-
+    if [[ "$cmd" == "r" ]]; then
+      venv_name=$(get_venv $venvs_list $venv_name)
       if [[ "$venv_name" == "" ]]; then
-        echo "Incorrect venv name!"
         return -1
+      else
+        rm -rf $VENVS_DIR/$venv_name
+        return 0
       fi
     fi
 
-    init_file="$VENVS_DIR/$venv_name/bin/activate"
+    if [[ "$cmd" == "" || "$cmd" == "s" ]]; then
+      venv_name=$(get_venv $venvs_list $venv_name)
+      if [[ "$venv_name" == "" ]]; then
+        return -1
+      fi
 
-    if [[ -e "$VENVS_DIR/$venv_name" && (! -d "$VENVS_DIR/$venv_name" || ! -e ${init_file}) ]]; then
-      echo "Error! Object with name '${venv_name}' already exists!"
-      return -1
+      init_file="$VENVS_DIR/$venv_name/bin/activate"
     fi
 
-    python -m venv "$VENVS_DIR/$venv_name"
-    is_new_venv=true
+    if [[ "$cmd" == "n" ]]; then
+      if [[ "$venv_name" == "" ]]; then
+        echo -n "Enter venv name: "
+        read venv_name
+
+        if [[ "$venv_name" == "" ]]; then
+          echo "Incorrect venv name!"
+          return -1
+        fi
+      fi
+
+      init_file="$VENVS_DIR/$venv_name/bin/activate"
+
+      if [[ -e "$VENVS_DIR/$venv_name" && (! -d "$VENVS_DIR/$venv_name" || ! -e ${init_file}) ]]; then
+        echo "Error! Object with name '${venv_name}' already exists!"
+        return -1
+      fi
+
+      python3 -m venv "$VENVS_DIR/$venv_name"
+      is_new_venv=true
+    fi
   fi
 
   source ${init_file}
